@@ -1,0 +1,872 @@
+﻿@{
+    ViewBag.Title = "Edit";
+}
+@using FifthTribe.HultPrize;
+@using HultPrizeAtAdmin.Common;
+@using FifthTribe.Database.HultPrize;
+@{
+    // Get current user
+    Bus_User currentUser = HultPrizeAtAdmin.HultPrizeAtApplication.CurrentUser;
+
+    // Get the result
+    Bus_Organization_Result result = ViewBag.Result;
+
+    // Check if it was successful
+    if (result != null && result.Success)
+    {
+
+        // Get the school
+        Bus_Organization school = result.Organization;
+       
+      <h1 class="page-header">Hult Prize at @school.OrganizationName Official Page</h1>
+
+        if ((HultPrizeAtAdmin.HultPrizeAtApplication.CurrentUser != null) || Request.Url.ToString().Contains("id"))
+        {
+            <div class="row">
+                <a class="pull-left btn btn-lg btn-primary btn-preview-url" href="@school.SchoolPublicURL(ViewBag.RunTimeEnvironment)_preview" target="_blank">Preview Page</a>
+
+                <button id="activation" class="pull-left btn btn-lg @(school.ExtraInformation.IsPageActive ? "btn-danger" : "btn-success active")" data-id="@school.OrganizationId">
+                    @(school.ExtraInformation.IsPageActive ? "Deactivate" : "Activate")
+                </button>
+            </div>
+        }
+
+        if (Session["EditSchoolSuccessMessage"] != null)
+        {
+        <div class="row">
+            <div class="alert alert-success">@Session["EditSchoolSuccessMessage"]</div>
+        </div>
+            Session["EditSchoolSuccessMessage"] = null;
+        }
+
+        if (Session["EditSchoolErrorMessage"] != null)
+        {
+        <div class="row">
+            <div class="alert alert-danger">@Session["EditSchoolErrorMessage"]</div>
+        </div>
+            Session["EditSchoolErrorMessage"] = null;
+        }
+
+        int env = ViewBag.RuntimeEnvironment;
+    
+    <div class="clearfix"></div>
+<!--<span class="pull-right"><a href="/school/save?schoolId=@school.OrganizationId" class="save-btn btn btn-hult-lightblue">Save and Preview</a> <a href="/school/publish?schoolId=@school.OrganizationId" class="publish-btn btn btn-hult-darkblue">Publish</a></span> -->   
+    
+    
+    
+    
+<div class="edit-section">
+    <div class="col-md-4">
+        <h3>School Image</h3>
+        <div class="school-image section-image">
+        @{
+        if (school.ExtraInformation.BackgroundImageUploaded == 1)
+        {
+                <img src="@HultPrizeAtCommon.BuildAssetURL(school.OrganizationDirectory_URL(env), school.ExtraInformation.BackgroundImageName)" alt="" border="0" />
+        }
+        }
+            <form action="/school/image" class="first" method="post" enctype="multipart/form-data">
+                <input type="hidden" value="@school.OrganizationId" name="orgId" />
+                <span class="btn btn-primary btn-file"><i class="glyphicon glyphicon-picture"></i> Upload your image <input type="file" name="file" class="image-upload" /></span>
+            </form>
+            <p>Image should be .jpg format. Recommended size: 1500px (width) x 500px (height).</p>
+        </div>
+    </div>
+
+
+        <div class="col-md-4">
+            <h3>School Name</h3>
+        <form class="form-horizontal" action="/school/name" method="post">
+            <input type="hidden" name="schoolId" value="@school.OrganizationId" />
+            <div class="form-group">
+                <div class="col-sm-12">
+                    <input type="text" class="form-control" name="schoolName" placeholder="School Name" maxlength="@Organization_Table.ColumnLengths.ORGANIZATION_NAME" value="@school.OrganizationName" />
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-12">
+                    <button type="submit" class="btn btn-primary">Update School Name</button>
+                </div>
+            </div>
+        </form>
+    @{
+        if (currentUser.IsHultAdmin || currentUser.IsSuperUser)
+        {
+            <h3>School Logo Image</h3>
+            <div class="school-image section-image">
+            @{
+            if (school.ExtraInformation.LogoImageUploaded == 1)
+            {
+                    <img src="@HultPrizeAtCommon.BuildAssetURL(school.OrganizationDirectory_URL(env), school.ExtraInformation.LogoImageName)" alt="" border="0" />
+            }
+            }
+                <form action="/school/logo" class="first" method="post" enctype="multipart/form-data">
+                    <input type="hidden" value="@school.OrganizationId" name="orgId" />
+                    <input type="hidden" value="false" name="comingFromSchoolsPage" />
+                    <span class="btn btn-primary btn-file"><i class="glyphicon glyphicon-picture"></i> Upload image <input type="file" name="file" class="image-upload" /></span>
+                </form>
+
+            @{
+            if (school.ExtraInformation.LogoImageUploaded == 1)
+            {
+            <form action="/school/logodelete" method="post" enctype="multipart/form-data">
+                <input type="hidden" value="@school.OrganizationId" name="orgId" />
+                <input type="hidden" value="false" name="comingFromSchoolsPage" />
+                <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-trash"></i> Delete logo</button>
+            </form>
+            }
+            }
+
+            </div>
+        
+        }
+    }
+                    
+        </div>
+
+
+    <div class="col-md-4">
+        <h3>School Social Links</h3>
+        <form class="form-horizontal" action="/school/sociallinks" method="post">
+            <input type="hidden" name="schoolId" value="@school.OrganizationId" />
+            <div class="form-group">
+                <label for="schoolFacebook" class="col-sm-2 control-label"><i class="fa fa-facebook"></i></label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" name="schoolFacebook" placeholder="Facebook URL" maxlength="@OrganizationExtra_Table.ColumnLengths.FACEBOOK_URL" value="@school.ExtraInformation.FacebookUrl" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="schoolTwitter" class="col-sm-2 control-label"><i class="fa fa-twitter"></i></label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" name="schoolTwitter" placeholder="Twitter URL" maxlength="@OrganizationExtra_Table.ColumnLengths.TWITTER_URL" value="@school.ExtraInformation.TwitterUrl" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="schoolLinkedIn" class="col-sm-2 control-label"><i class="fa fa-linkedin"></i></label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" name="schoolLinkedIn" placeholder="LinkedIn URL" maxlength="@OrganizationExtra_Table.ColumnLengths.LINKED_IN_URL" value="@school.ExtraInformation.LinkedInUrl" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="schoolInstagram" class="col-sm-2 control-label"><i class="fa fa-instagram"></i></label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" name="schoolInstagram" placeholder="Instagram URL" maxlength="@OrganizationExtra_Table.ColumnLengths.INSTAGRAM_URL" value="@school.ExtraInformation.InstagramUrl">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-10 col-sm-offset-2">
+                    <button type="submit" class="btn btn-primary">Update Social Links</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+</div>
+ 
+    
+<div class="edit-section">
+    <h3>Director's Section</h3>
+    <label><input type="checkbox" class="is-visible" id="directorSectionVisible" name="@(school.OrganizationId)" @(school.ExtraInformation.ShowDirectorMessage_Bool ? "checked" : "") /> Visible to the public?</label>
+    <div id="director-section">
+        <div class="director-image section-image image-person">
+            @{
+        if (school.ExtraInformation.CampusDirectorImageUploaded == 1)
+        {
+                <img src="@HultPrizeAtCommon.BuildAssetURL(school.OrganizationDirectory_URL(env), school.ExtraInformation.CampusDirectorImageName)" alt="" border="0" />
+        }
+        else
+        {
+                <div class="no-image"><i class="glyphicon glyphicon-user"></i></div>
+        }
+            }
+            <form action="/school/directorimage" method="post" enctype="multipart/form-data">
+                <input type="hidden" value="@school.OrganizationId" name="orgId" />
+                <span class="btn btn-primary btn-file"><i class="glyphicon glyphicon-picture"></i> Upload your image <input type="file" name="file" class="image-upload" /></span>
+            </form>
+            <p>Image should be .jpg format. Recommended size: 200px x 200px.</p>
+        </div>
+        <div class="director-message">
+            <form action="/school/directormessage" method="post">
+                <input type="hidden" value="@school.OrganizationId" name="orgId" />
+                <div class="form-group">
+                    <label for="message" class="col-sm-2 control-label">Director's Message</label>
+                    <div class="col-sm-10">
+                        <textarea name="message" maxlength="@OrganizationExtra_Table.ColumnLengths.DIRECTOR_MESSAGE" class="form-control required" cols="5">@school.ExtraInformation.DirectorMessage</textarea>
+                        <p class="help-block">100 words max</p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <button type="submit" class="btn btn-primary">Update Director's Message</button>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+<div class="edit-section">
+    <h3>Event Details</h3>
+
+        @{
+        if (school.Events.Count > 0)
+        {
+    <label><input type="checkbox" class="is-visible" id="eventSectionVisible" name="@(school.OrganizationId)" @(school.ExtraInformation.ShowEvents_Bool ? "checked" : "") /> Visible to the public?</label>
+    <div id="events">            
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Time</th>
+                            <th>Date</th>
+                            <th>Venue</th>
+                            <th>Address</th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    @{
+            foreach (Bus_Event e in school.Events)
+            {
+                        <tr id="event-@e.EventId" class="event">
+                            <td class="event-title">
+                                <strong>@e.Title</strong>
+                                @{
+                if (e.AdditionalInfo.Length > 0)
+                {
+                                        <br /><em>Additional Info:</em><br />@e.AdditionalInfo
+                }
+                                }
+                            </td>
+                            <td class="event-time">
+                                @e.EventDtime.ToShortTimeString()
+                            </td>
+                            <td class="event-date">
+                                @e.EventDtime.ToShortDateString()
+                            </td>
+                            <td class="event-venue">
+                                @e.Venue
+                            </td>
+                            <td class="event-address">
+                                @{
+                if (e.StreetAddress1.Length > 0)
+                {
+                                        @e.StreetAddress1<br />
+                    if (e.StreetAddress2.Length > 0)
+                    {
+                                        @e.StreetAddress2<br />
+                    }
+                                        @e.City@:, @e.State, @e.ZipCode<br />
+                                        @e.Country
+                }
+                                }
+                            </td>
+                            <td class="event-controls">
+                                <a href="#" class="edit-btn btn btn-default edit-event" data-id="@e.EventId"><i class="glyphicon glyphicon-pencil"></i> Edit</a>
+                            </td>
+                            <td>
+                                <form action="/School/RemoveEvent" method="post">
+                                    <input type="hidden" name="schoolId" value="@school.OrganizationId" />
+                                    <input type="hidden" name="eventId" value="@e.EventId" />
+                                    <button type="submit" class="btn btn-default"><i class="glyphicon glyphicon-trash"></i> Remove</button>
+                                </form>
+                            </td>
+                        </tr>
+            }
+                    }
+                    </tbody>
+                </table>
+        </div>
+            
+        }
+        }
+            <a href="#" class="add-btn btn btn-hult-lightblue" data-toggle="modal" data-target="#add-event"><i class="glyphicon glyphicon-plus"></i> Add Event</a>
+
+
+</div>
+
+<div class="edit-section">
+    <h3>Judges</h3>
+
+    @{
+        if (school.Judges.Count > 0)
+        {
+    @:<label><input type="checkbox" class="is-visible" id="judgesSectionVisible" name="@(school.OrganizationId)" @(school.ExtraInformation.ShowJudges_Bool ? "checked" : "") /> Visible to the public?</label>
+    @:<div id="judges row">            
+            
+            foreach (Bus_Judge judge in school.Judges)
+            {
+            <div class="col-md-3">
+            <div class="event-judge" id="judge-@judge.JudgeId">
+                <div class="object-controls">
+                    <a href="#" class="edit-btn btn btn-xs btn-default edit-judge pull-left" data-id="@judge.JudgeId"><i class="glyphicon glyphicon-pencil"></i> Edit</a>
+                    <form action="/school/removejudge" method="post" class="pull-right">
+                        <input type="hidden" name="orgId" value="@judge.OrganizationId" />
+                        <input type="hidden" name="judgeId" value="@judge.JudgeId" />
+                        <button class="remove-btn btn btn-xs btn-default"><i class="glyphicon glyphicon-remove"></i> Remove</button>
+                    </form>
+                </div>
+                <div class="event-judge-image image-person">
+                @{ if (judge.DisplayOrder != 1)
+                   {
+                <form method="post" action="/school/movejudgeup" class="judge-move-up judge-order">
+                    <input type="hidden" name="judgeId" value="@judge.JudgeId" />
+                    <button type="submit" class="btn btn-xs btn-info"><i class="glyphicon glyphicon-chevron-left"></i></button>
+                </form>
+                   }
+                   if (judge.DisplayOrder != (school.Judges.Count))
+                   {
+                <form method="post" action="/school/movejudgedown" class="judge-move-down judge-order">
+                    <input type="hidden" name="judgeId" value="@judge.JudgeId" />
+                    <button type="submit" class="btn btn-xs btn-info"><i class="glyphicon glyphicon-chevron-right"></i></button>
+                </form>
+                   }
+                    }
+
+    @{
+                   if (judge.ImageUploaded == 1)
+                   {
+            <img src="@HultPrizeAtCommon.BuildAssetURL(school.OrganizationDirectory_URL(env), judge.ImageFilename)" alt="" border="0" class="img-circle" />
+                   }
+                   else
+                   {
+                <div class="no-image"><i class="glyphicon glyphicon-user"></i></div>
+                   }
+    }  
+
+                    <form action="/school/judgeimage" method="post" enctype="multipart/form-data">
+                        <input type="hidden" value="@school.OrganizationId" name="orgId" />
+                        <input type="hidden" name="judgeId" value="@judge.JudgeId" />
+                        <span class="btn btn-primary btn-sm btn-file"><i class="glyphicon glyphicon-picture"></i> Upload image <input type="file" name="file" class="image-upload" /></span>
+                    </form>
+                </div>
+                <div class="event-judge-info">
+                    <strong>@judge.NameFirst @judge.NameLast</strong><br />
+                    <em>@judge.Title</em> <button type="button" class="btn btn-xs btn-default popover-dismiss" data-toggle="popover" title="Biography of @judge.NameFirst @judge.NameLast" data-content="@judge.Bio">Bio</button>
+                    
+                </div>
+                
+            </div>
+            </div>          
+            }
+           <p class="image-info">Judge's image should be .jpg format. Recommended size: 200px x 200px.</p> 
+    @:</div>
+
+        }
+    }
+    <a href="#" class="add-btn btn btn-hult-lightblue" data-toggle="modal" data-target="#add-judge"><i class="glyphicon glyphicon-plus"></i> Add judge</a>
+</div>
+    
+<div class="edit-section">
+    <h3>Staff</h3>
+
+    @{
+        if (school.StaffMembers.Count > 0)
+        {
+    @:<label><input type="checkbox" class="is-visible" id="staffSectionVisible" name="@(school.OrganizationId)" @(school.ExtraInformation.ShowStaff_Bool ? "checked" : "") /> Visible to the public?</label>
+    @:<div id="staff">            
+            
+            foreach (Bus_Staff staff in school.StaffMembers)
+            {
+            <div class="col-md-3">
+            <div class="event-judge" id="judge-@staff.StaffId">
+                <div class="object-controls">
+                    <a href="#" class="edit-btn btn btn-xs btn-default edit-staff pull-left" data-id="@staff.StaffId"><i class="glyphicon glyphicon-pencil"></i> Edit</a>
+                    <form action="/school/removestaff" method="post" class="pull-right">
+                        <input type="hidden" name="orgId" value="@staff.OrganizationId" />
+                        <input type="hidden" name="staffId" value="@staff.StaffId" />
+                        <button class="remove-btn btn btn-xs btn-default"><i class="glyphicon glyphicon-remove"></i> Remove</button>
+                    </form>
+                </div>
+                <div class="event-judge-image image-person">
+
+                @{ if (staff.DisplayOrder != 1)
+                   {
+                <form method="post" action="/school/movestaffup" class="judge-move-up judge-order">
+                    <input type="hidden" name="staffId" value="@staff.StaffId" />
+                    <button type="submit" class="btn btn-xs btn-info"><i class="glyphicon glyphicon-chevron-left"></i></button>
+                </form>
+                   }
+                   if (staff.DisplayOrder != (school.StaffMembers.Count))
+                   {
+                <form method="post" action="/school/movestaffdown" class="judge-move-down judge-order">
+                    <input type="hidden" name="staffId" value="@staff.StaffId" />
+                    <button type="submit" class="btn btn-xs btn-info"><i class="glyphicon glyphicon-chevron-right"></i></button>
+                </form>
+                   }
+                    }
+
+
+    @{
+                   if (staff.ImageUploaded == 1)
+                   {
+            <img src="@HultPrizeAtCommon.BuildAssetURL(school.OrganizationDirectory_URL(env), staff.ImageFilename)" alt="" border="0" class="img-circle" />
+                   }
+                   else
+                   {
+                <div class="no-image"><i class="glyphicon glyphicon-user"></i></div>
+                   }
+    }  
+                    <form action="/school/staffimage" method="post" enctype="multipart/form-data">
+                        <input type="hidden" value="@school.OrganizationId" name="orgId" />
+                        <input type="hidden" value="@staff.StaffId" name="staffId" />
+                        <span class="btn btn-primary btn-sm btn-file"><i class="glyphicon glyphicon-picture"></i> Upload image <input type="file" name="file" class="image-upload" /></span>
+                    </form>
+                </div>
+                <div class="event-judge-info">
+                    <strong>@staff.NameFirst @staff.NameLast</strong><br />
+                    <em>@staff.Position</em>
+                </div>
+            </div>
+            </div>            
+            }
+            
+           <p class="image-info">Staff's image should be .jpg format. Recommended size: 200px x 200px.</p>  
+    @:</div>
+
+        }
+    }
+
+    <a href="#" class="add-btn btn btn-hult-lightblue" data-toggle="modal" data-target="#add-staff"><i class="glyphicon glyphicon-plus"></i> Add staff</a>
+</div>     
+    
+<div class="edit-section">
+    <h3>Sponsors</h3>
+
+    @{
+        if (school.Sponsors.Count > 0)
+        {
+            
+    @:<label><input type="checkbox" class="is-visible" id="sponsorSectionVisible" name="@(school.OrganizationId)" @(school.ExtraInformation.ShowSponsor_Bool ? "checked" : "") /> Visible to the public?</label>
+    @:<div id="sponsors">            
+            
+            foreach (Bus_Sponsor sponsor in school.Sponsors)
+            {
+                <div class="col-md-3">
+            <div class="event-judge" id="sponsor-@sponsor.SponsorId">
+                <div class="object-controls">
+                    <a href="#" class="edit-btn btn btn-xs btn-default edit-sponsor pull-left" data-id="@sponsor.SponsorId"><i class="glyphicon glyphicon-pencil"></i> Edit</a>
+                    <form action="/school/removesponsor" method="post" class="pull-right">
+                        <input type="hidden" name="orgId" value="@school.OrganizationId" />
+                        <input type="hidden" name="sponsorId" value="@sponsor.SponsorId" />
+                        <button class="remove-btn btn btn-xs btn-default"><i class="glyphicon glyphicon-remove"></i> Remove</button>
+                    </form>
+                </div>
+                <div class="event-judge-image image-person">
+
+                @{ if (sponsor.DisplayOrder != 1)
+                   {
+                <form method="post" action="/school/movesponsorup" class="judge-move-up judge-order">
+                    <input type="hidden" name="sponsorId" value="@sponsor.SponsorId" />
+                    <button type="submit" class="btn btn-xs btn-info"><i class="glyphicon glyphicon-chevron-left"></i></button>
+                </form>
+                   }
+                   if (sponsor.DisplayOrder != (school.Sponsors.Count))
+                   {
+                <form method="post" action="/school/movesponsordown" class="judge-move-down judge-order">
+                    <input type="hidden" name="sponsorId" value="@sponsor.SponsorId" />
+                    <button type="submit" class="btn btn-xs btn-info"><i class="glyphicon glyphicon-chevron-right"></i></button>
+                </form>
+                   }
+                    }
+
+
+    @{
+                   if (sponsor.ImageUploaded == 1)
+                   {
+            <img src="@HultPrizeAtCommon.BuildAssetURL(school.OrganizationDirectory_URL(env), sponsor.ImageFilename)" alt="" border="0" class="img-circle" />
+                   }
+                   else
+                   {
+                <div class="no-image"><i class="glyphicon glyphicon-picture"></i></div>
+                   }
+    }  
+                    <form action="/school/sponsorimage" method="post" enctype="multipart/form-data">
+                        <input type="hidden" value="@school.OrganizationId" name="orgId" />
+                        <input type="hidden" value="@sponsor.SponsorId" name="sponsorId" />
+                        <span class="btn btn-primary btn-sm btn-file"><i class="glyphicon glyphicon-picture"></i> Upload image <input type="file" name="file" class="image-upload" /></span>
+                    </form>
+                </div>
+                <div class="event-judge-info">
+                    <strong>@sponsor.SponsorName</strong><br />
+                    <em><a href="@sponsor.SponsorUrl" target="_blank">@sponsor.SponsorUrl</a></em>
+                </div>
+            </div>
+                    </div>       
+            }
+            
+           <p class="image-info">Sponsor's image should be .jpg format. Recommended size: 200px x 200px.</p>  
+    @:</div>
+
+        }
+    }
+
+    <a href="#" class="add-btn btn btn-hult-lightblue" data-toggle="modal" data-target="#add-sponsor"><i class="glyphicon glyphicon-plus"></i> Add Sponsor</a>
+</div>     
+    
+<div class="edit-section">
+    <h3>Press</h3>
+
+    @{
+        if (school.Press.Count > 0)
+        {
+            
+    @:<label><input type="checkbox" class="is-visible" id="pressSectionVisible" name="@(school.OrganizationId)" @(school.ExtraInformation.ShowPress_Bool ? "checked" : "") /> Visible to the public?</label>
+    @:<div id="press">            
+            
+            foreach (Bus_Press article in school.Press)
+            {
+                <div class="col-md-4">
+            <div class="event-judge press-article" id="press-@article.PressId" data-url="@article.PressUrl">
+                <div class="object-controls">
+                    <a href="#" class="edit-btn btn btn-xs btn-default edit-press pull-left" data-id="@article.PressId"><i class="glyphicon glyphicon-pencil"></i> Edit</a>
+                    <form action="/school/removepress" method="post" class="pull-right">
+                        <input type="hidden" name="orgId" value="@school.OrganizationId" />
+                        <input type="hidden" name="pressId" value="@article.PressId" />
+                        <button class="remove-btn btn btn-xs btn-default"><i class="glyphicon glyphicon-remove"></i> Remove</button>
+                    </form>
+                </div>
+                <div class="event-judge-image image-person">
+
+                @{ if (article.DisplayOrder != 1)
+                   {
+                <form method="post" action="/school/movepressup" class="judge-move-up judge-order">
+                    <input type="hidden" name="pressId" value="@article.PressId" />
+                    <button type="submit" class="btn btn-xs btn-info"><i class="glyphicon glyphicon-chevron-left"></i></button>
+                </form>
+                   }
+                   if (article.DisplayOrder != (school.Press.Count))
+                   {
+                <form method="post" action="/school/movepressdown" class="judge-move-down judge-order">
+                    <input type="hidden" name="pressId" value="@article.PressId" />
+                    <button type="submit" class="btn btn-xs btn-info"><i class="glyphicon glyphicon-chevron-right"></i></button>
+                </form>
+                   }
+                    }
+                    <img src="" class="press-image" alt="" border="0" />
+                </div>
+                <div class="event-judge-info">
+                    <strong class="press-title">@article.Title</strong><br />
+                    <em class="press-description"></em>
+                </div>
+            </div>  
+                    </div>          
+            }
+    @:</div>
+
+        }
+    }
+
+    
+
+            <a href="#" class="add-btn btn btn-hult-lightblue" data-toggle="modal" data-target="#add-press"><i class="glyphicon glyphicon-plus"></i> Add Press</a>
+
+    
+</div>         
+    
+    
+<div class="edit-section">
+    <div class="col-md-12">
+        <h3>School Registration Form</h3>
+        <label><input type="checkbox" class="is-visible" id="registrationFormSectionVisible" name="@(school.OrganizationId)" @(school.ExtraInformation.ShowRegistrationForm_Bool ? "checked" : "") /> Visible to the public?</label>
+        <form class="form-horizontal" method="post" action="/school/registrationtext">
+            <input type="hidden" name="schoolId" value="@school.OrganizationId" />
+            <div class="form-group">
+                <label for="" class="col-md-3">Registration Form Text</label>
+                <div class="col-md-9">
+                    <textarea name="text" class="form-control" maxlength=" @OrganizationExtra_Table.ColumnLengths.REGISTRATION_FORM_TEXT">@school.ExtraInformation.RegistrationFormText</textarea>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-9 col-md-offest-3">
+                    <input type="submit" class="btn btn-primary" value="Update" />
+                </div>
+            </div>
+        </form>
+    </div>    
+</div>
+    
+    
+<div class="edit-section">
+    <div class="col-md-12">
+        <h3>Winner</h3>
+        <label><input type="checkbox" class="is-visible" id="winnerSectionVisible" name="@(school.OrganizationId)" @(school.ExtraInformation.ShowWinner_Bool ? "checked" : "") /> Visible to the public?</label>
+
+        <div class="winner-image section-image">
+            @{
+                if (school.ExtraInformation.WinnerImageUploaded == 1)
+                {
+                        <img width="200" src="@HultPrizeAtCommon.BuildAssetURL(school.OrganizationDirectory_URL(env), school.ExtraInformation.WinnerImageFilename)" alt="" border="0" />
+                }
+            }
+                <form action="/school/winnerimage" method="post" enctype="multipart/form-data">
+                    <input type="hidden" value="@school.OrganizationId" name="orgId" />
+                    <input type="hidden" value="false" name="comingFromSchoolsPage" />
+                    <span class="btn btn-primary btn-file"><i class="glyphicon glyphicon-picture"></i> Update Winner Image <input type="file" name="file" class="image-upload" /></span>
+                </form>
+            </div>
+        <div class="winner-caption">
+                <form action="/school/winnertext" method="post" enctype="multipart/form-data">
+                    <input type="hidden" value="@school.OrganizationId" name="schoolId" />
+                                <div class="form-group">
+                        <input type="text" name="caption" value="@school.ExtraInformation.WinnerCaption" placeholder="Enter image caption" class="form-control" maxlength="@OrganizationExtra_Table.ColumnLengths.WINNER_CAPTION" />
+                    </div>
+                    <div class="form-group">
+                            <input type="submit" class="btn btn-primary" value="Update Winner Caption" />
+                    </div>
+                </form>
+
+        </div>
+
+
+
+    </div>    
+</div>
+    
+@Html.Partial("~/Views/School/_judgeModals.cshtml")
+
+@Html.Partial("~/Views/School/_staffModals.cshtml")
+
+@Html.Partial("~/Views/School/_eventModals.cshtml")    
+    
+@Html.Partial("~/Views/School/_sponsorModals.cshtml")    
+    
+@Html.Partial("~/Views/School/_pressModals.cshtml")    
+
+    
+<script type="text/javascript">
+    var schoolAssetDirectoryURL = '';
+</script>    
+    
+    
+<script id="judges-template" type="text/x-handlebars-template">
+
+    {{#each this.Judges}}
+    <div class="col-md-3">
+    <div class="event-judge" id="judge-{{this.JudgeId}}">
+        <div class="object-controls">
+            <a href="#" class="edit-btn btn btn-xs btn-default edit-judge pull-left" data-id="{{this.JudgeId}}"><i class="glyphicon glyphicon-pencil"></i> Edit</a>
+                    <form action="/school/removejudge" method="post" class="pull-right">
+                        <input type="hidden" name="orgId" value="{{this.OrganizationId}}" />
+                        <input type="hidden" name="judgeId" value="{{this.JudgeId}}" />
+                        <button class="remove-btn btn btn-xs btn-default"><i class="glyphicon glyphicon-remove"></i> Remove</button>
+                    </form>
+                </div>
+                <div class="event-judge-image image-person">
+                    {{#dontshowleftarrow this.DisplayOrder}}
+                <form method="post" action="/school/movejudgeup" class="judge-move-up judge-order">
+                    <input type="hidden" name="judgeId" value="{{this.JudgeId}}" />
+                    <button type="submit" class="btn btn-xs btn-info"><i class="glyphicon glyphicon-chevron-left"></i></button>
+                </form>
+                    {{/dontshowleftarrow}}
+                {{#dontshowrightarrow this.DisplayOrder ../Judges.length}}
+                <form method="post" action="/school/movejudgedown" class="judge-move-down judge-order">
+                    <input type="hidden" name="judgeId" value="{{this.JudgeId}}" />
+                    <button type="submit" class="btn btn-xs btn-info"><i class="glyphicon glyphicon-chevron-right"></i></button>
+                </form>
+                {{/dontshowrightarrow}}
+                    
+                    {{#checkifimageuploaded this.ImageUploaded}}
+                    <img src="@school.OrganizationDirectory_URL(env)/{{this.ImageFilename}}" alt="" border="0" />
+                    {{else}}
+                    <div class="no-image"><i class="glyphicon glyphicon-user"></i></div>
+                    {{/checkifimageuploaded}}
+
+
+                    <form action="/school/judgeimage" method="post" enctype="multipart/form-data">
+                        <input type="hidden" value="@school.OrganizationId" name="orgId" />
+                        <input type="hidden" name="judgeId" value="{{this.JudgeId}}" />
+                        <span class="btn btn-primary btn-sm btn-file"><i class="glyphicon glyphicon-picture"></i> Upload image <input type="file" name="file" class="image-upload" /></span>
+                    </form>
+                </div>
+                <div class="event-judge-info">
+                    <strong>{{this.NameFirst}} {{this.NameLast}}</strong><br />
+                    <em>{{this.Title}}</em> <button type="button" class="btn btn-xs btn-default popover-dismiss" data-toggle="popover" title="Biography of {{this.NameFirst}} {{this.NameLast}}" data-content="{{this.Bio}}">Bio</button>
+                    
+                </div>
+                
+            </div>
+        </div>            
+    {{/each}}
+
+</script>    
+    
+<script id="staff-template" type="text/x-handlebars-template">
+
+    {{#each this.StaffMembers}}
+    <div class="col-md-3">
+    <div class="event-judge" id="staff-{{this.StaffId}}">
+        <div class="object-controls">
+            <a href="#" class="edit-btn btn btn-xs btn-default edit-judge pull-left" data-id="{{this.StaffId}}"><i class="glyphicon glyphicon-pencil"></i> Edit</a>
+                    <form action="/school/removestaff" method="post" class="pull-right">
+                        <input type="hidden" name="orgId" value="{{this.OrganizationId}}" />
+                        <input type="hidden" name="staffId" value="{{this.StaffId}}" />
+                        <button class="remove-btn btn btn-xs btn-default"><i class="glyphicon glyphicon-remove"></i> Remove</button>
+                    </form>
+                </div>
+                <div class="event-judge-image image-person">
+                    {{#dontshowleftarrow this.DisplayOrder}}
+                <form method="post" action="/school/movestaffup" class="judge-move-up judge-order">
+                    <input type="hidden" name="staffId" value="{{this.StaffId}}" />
+                    <button type="submit" class="btn btn-xs btn-info"><i class="glyphicon glyphicon-chevron-left"></i></button>
+                </form>
+                    {{/dontshowleftarrow}}
+                {{#dontshowrightarrow this.DisplayOrder ../StaffMembers.length}}
+                <form method="post" action="/school/movestaffdown" class="judge-move-down judge-order">
+                    <input type="hidden" name="staffId" value="{{this.StaffId}}" />
+                    <button type="submit" class="btn btn-xs btn-info"><i class="glyphicon glyphicon-chevron-right"></i></button>
+                </form>
+                {{/dontshowrightarrow}}
+                    
+                    {{#checkifimageuploaded this.ImageUploaded}}
+                    <img src="@school.OrganizationDirectory_URL(env)/{{this.ImageFilename}}" alt="" border="0" />
+                    {{else}}
+                    <div class="no-image"><i class="glyphicon glyphicon-user"></i></div>
+                    {{/checkifimageuploaded}}
+
+
+                    <form action="/school/staffimage" method="post" enctype="multipart/form-data">
+                        <input type="hidden" value="@school.OrganizationId" name="orgId" />
+                        <input type="hidden" name="staffId" value="{{this.StaffId}}" />
+                        <span class="btn btn-primary btn-sm btn-file"><i class="glyphicon glyphicon-picture"></i> Upload image <input type="file" name="file" class="image-upload" /></span>
+                    </form>
+                </div>
+                <div class="event-judge-info">
+                    <strong>{{this.NameFirst}} {{this.NameLast}}</strong><br />
+                    <em>{{this.Position}}</em>
+                </div>
+                
+            </div>    
+        
+        </div>        
+    {{/each}}
+
+</script>    
+        
+    
+<script id="sponsors-template" type="text/x-handlebars-template">
+
+    {{#each this.Sponsors}}
+    <div class="col-md-3">
+    <div class="event-judge" id="sponsor-{{this.SponsorId}}">
+        <div class="object-controls">
+            <a href="#" class="edit-btn btn btn-xs btn-default edit-sponsor pull-left" data-id="{{this.SponsorId}}"><i class="glyphicon glyphicon-pencil"></i> Edit</a>
+                    <form action="/school/removesponsor" method="post" class="pull-right">
+                        <input type="hidden" name="orgId" value="{{this.OrganizationId}}" />
+                        <input type="hidden" name="sponsorId" value="{{this.SponsorId}}" />
+                        <button class="remove-btn btn btn-xs btn-default"><i class="glyphicon glyphicon-remove"></i> Remove</button>
+                    </form>
+                </div>
+                <div class="event-judge-image image-person">
+                    {{#dontshowleftarrow this.DisplayOrder}}
+                <form method="post" action="/school/movesponsorup" class="judge-move-up judge-order">
+                    <input type="hidden" name="sponsorId" value="{{this.SponsorId}}" />
+                    <button type="submit" class="btn btn-xs btn-info"><i class="glyphicon glyphicon-chevron-left"></i></button>
+                </form>
+                    {{/dontshowleftarrow}}
+                {{#dontshowrightarrow this.DisplayOrder ../Sponsors.length}}
+                <form method="post" action="/school/movesponsordown" class="judge-move-down judge-order">
+                    <input type="hidden" name="sponsorId" value="{{this.SponsorId}}" />
+                    <button type="submit" class="btn btn-xs btn-info"><i class="glyphicon glyphicon-chevron-right"></i></button>
+                </form>
+                {{/dontshowrightarrow}}
+                    
+                    {{#checkifimageuploaded this.ImageUploaded}}
+                    <img src="@school.OrganizationDirectory_URL(env)/{{this.ImageFilename}}" alt="" border="0" />
+                    {{else}}
+                    <div class="no-image"><i class="glyphicon glyphicon-picture"></i></div>
+                    {{/checkifimageuploaded}}
+
+
+                    <form action="/school/sponsorimage" method="post" enctype="multipart/form-data">
+                        <input type="hidden" value="@school.OrganizationId" name="orgId" />
+                        <input type="hidden" name="sponsorId" value="{{this.SponsorId}}" />
+                        <span class="btn btn-primary btn-sm btn-file"><i class="glyphicon glyphicon-picture"></i> Upload image <input type="file" name="file" class="image-upload" /></span>
+                    </form>
+                </div>
+                <div class="event-judge-info">
+                    <strong>{{this.SponsorName}}</strong><br />
+                    <em>{{this.Url}}</em>
+                    
+                </div>
+                
+            </div>         
+        
+        </div>   
+    {{/each}}
+
+</script>       
+    
+    
+<script id="press-template" type="text/x-handlebars-template">
+
+    {{#each this.Press}}
+    <div class="col-md-4">
+    <div class="event-judge press-article" id="press-{{this.PressId}}" data-url="{{this.PressUrl}}">
+        <div class="object-controls">
+            <a href="#" class="edit-btn btn btn-xs btn-default edit-press pull-left" data-id="{{this.PressId}}"><i class="glyphicon glyphicon-pencil"></i> Edit</a>
+                    <form action="/school/removepress" method="post" class="pull-right">
+                        <input type="hidden" name="orgId" value="{{this.OrganizationId}}" />
+                        <input type="hidden" name="pressId" value="{{this.PressId}}" />
+                        <button class="remove-btn btn btn-xs btn-default"><i class="glyphicon glyphicon-remove"></i> Remove</button>
+                    </form>
+                </div>
+                <div class="event-judge-image image-person">
+                    {{#dontshowleftarrow this.DisplayOrder}}
+                <form method="post" action="/school/movepressup" class="judge-move-up judge-order">
+                    <input type="hidden" name="pressId" value="{{this.PressId}}" />
+                    <button type="submit" class="btn btn-xs btn-info"><i class="glyphicon glyphicon-chevron-left"></i></button>
+                </form>
+                    {{/dontshowleftarrow}}
+                {{#dontshowrightarrow this.DisplayOrder ../Press.length}}
+                <form method="post" action="/school/movepressdown" class="judge-move-down judge-order">
+                    <input type="hidden" name="pressId" value="{{this.PressId}}" />
+                    <button type="submit" class="btn btn-xs btn-info"><i class="glyphicon glyphicon-chevron-right"></i></button>
+                </form>
+                {{/dontshowrightarrow}}
+                    
+                    <img src="" class="press-image" alt="" border="0" />
+                </div>
+                <div class="event-judge-info">
+                    <strong class="press-title">{{this.Title}}</strong><br />
+                    <em class="press-description"></em>
+                </div>
+                
+            </div>         
+        
+        </div>   
+    {{/each}}
+
+</script>       
+        
+    
+    <div id="preview-url">
+        <a href="#" class="btn btn-default btn-close-preview"><i class="glyphicon glyphicon-remove"></i> Close</a>
+        <div class="preview-url-iframe"></div>
+    </div>
+    
+    
+    }
+    else
+    {
+        
+        <h1 class="page-header">Error</h1>
+        <div class="alert alert-danger">
+            @{
+        if (result != null)
+        {
+                    @result.ErrorDisplayMessage
+        }
+        else
+        {
+                    @:You do not have any permissions to access this school.
+                }
+            }
+        </div>
+    
+    }
+}
+
+

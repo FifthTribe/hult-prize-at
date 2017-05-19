@@ -1,0 +1,232 @@
+﻿@{
+  ViewBag.Title = "_register";
+}
+@using FifthTribe.HultPrize;
+@{
+  Bus_Organization school = ViewBag.School;
+}
+<div id="register" class="@(school.ExtraInformation.ShowRegistrationForm_Bool ? "" : "no-display")">
+    <div class="container-fluid" id="register-container">
+
+        <h1>Join the world’s largest movement for social impact</h1>
+
+        <h2>@school.OrganizationNameUpper REGISTRATION FORM</h2>
+
+        <p class="text-center">@school.ExtraInformation.RegistrationFormText</p>
+    </div>
+</div>
+
+        <div id="form-container" class="container @(school.ExtraInformation.ShowRegistrationForm_Bool ? "" : "no-display")">
+            <form id="registrationForm" role="form" action="/schoolform" method="post">
+                <input type="hidden" name="orgId" value="@school.OrganizationId" />
+                <div class="row">
+
+                    <div class="col-md-6">
+                        <div class="team-member team-member-captain">
+
+                            <div class="reg-label">Team member 1* <span>Captain</span></div>
+
+                            <div class="form-group">
+                                <input type="text" class="form-control reg-input-pink required" name="member1FirstName" placeholder="First Name" />
+                            </div>
+                            <div class="form-group">
+                                <input type="text" class="form-control reg-input-pink required" name="member1LastName" placeholder="Last Name" />
+                            </div>
+                            <div class="form-group">
+                                <input type="email" class="form-control reg-input-pink required" name="member1Email" placeholder="Email" />
+                            </div>
+                            <div class="form-group">
+                                <div class="col-md-3" id="member1PhoneAreaCodeCol">
+                                    <input type="text" class="form-control reg-input-phone" name="member1PhoneAreaCode" maxlength="3" size="3" placeholder="555" />
+                                </div>
+                                <div class="col-md-3" id="member1PhonefirstthreeCol">
+                                    <input type="text" class="form-control reg-input-phone" name="member1Phonefirstthree" maxlength="3" size="3" placeholder="555" />
+                                </div>
+                                <div class="col-md-3" id="member1PhonelastfourCol">
+                                    <input type="text" class="form-control reg-input-phone" name="member1Phonelastfour" maxlength="4" size="3" placeholder="5555" />
+                                </div>
+                                <div class="col-md-3 no-display" id="member1PhoneCountryCodeCol">
+                                    <input type="text" class="form-control reg-input-phone" name="member1PhoneCountryCode" maxlength="4" size="3" placeholder="Code" />
+                                </div>
+                                <div class="col-md-6 no-display no-padding" id="member1PhoneInternationalCol">
+                                    <input type="text" class="form-control reg-input-int-phone" name="member1PhoneInternational" placeholder="International #">
+                                </div>
+                                <div class="col-md-3" id="member1PhoneExtensionCol">
+                                    <input type="text" class="form-control reg-input-phone reg-input-phone-full-width" name="member1PhoneExtension" maxlength="4" size="3" placeholder="Ext." />
+                                </div>
+                            </div>
+                            <label><input type="checkbox" class="is-international" id="member1PhoneInternationalBox" name="member1PhoneInternationalBox" /> International number?</label>
+                            <div class="form-group">
+                                <input type="text" class="form-control reg-input-pink" name="member1LinkedInUrl" placeholder="LinkedIn URL" />
+                            </div>
+                        </div>
+                 
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="team-member">
+
+                            <div class="reg-label">Team member 2*</div>
+
+                            <div class="form-group">
+                                <input type="text" class="form-control reg-input-pink required" name="member2FirstName" placeholder="First Name" />
+                            </div>
+                            <div class="form-group">
+                                <input type="text" class="form-control reg-input-pink required" name="member2LastName" placeholder="Last Name" />
+                            </div>
+                            <div class="form-group">
+                                <input type="email" class="form-control reg-input-pink required" name="member2Email" placeholder="Email" />
+                            </div>
+                            <div class="form-group">
+                                <div class="col-md-3" id="member2PhoneAreaCodeCol">
+                                    <input type="text" class="form-control reg-input-phone" name="member2PhoneAreaCode" maxlength="3" size="3" placeholder="555" />
+                                </div>
+                                <div class="col-md-3" id="member2PhonefirstthreeCol">
+                                    <input type="text" class="form-control reg-input-phone" name="member2Phonefirstthree" maxlength="3" size="3" placeholder="555" />
+                                </div>
+                                <div class="col-md-3" id="member2PhonelastfourCol">
+                                    <input type="text" class="form-control reg-input-phone" name="member2Phonelastfour" maxlength="4" size="3" placeholder="5555" />
+                                </div>
+                                <div class="col-md-3 no-display" id="member2PhoneCountryCodeCol">
+                                    <input type="text" class="form-control reg-input-phone" name="member2PhoneCountryCode" maxlength="4" size="3" placeholder="Code" />
+                                </div>
+                                <div class="col-md-6 no-display no-padding" id="member2PhoneInternationalCol">
+                                    <input type="text" class="form-control reg-input-int-phone" name="member2PhoneInternational" placeholder="International #">
+                                </div>
+                                <div class="col-md-3" id="member2PhoneExtensionCol">
+                                    <input type="text" class="form-control reg-input-phone reg-input-phone-full-width" name="member2PhoneExtension" maxlength="4" size="3" placeholder="Ext." />
+                                </div>
+                            </div>
+                            <label><input type="checkbox" class="is-international" id="member2PhoneInternationalBox" name="member2PhoneInternationalBox" /> International number?</label>
+                            <div class="form-group">
+                                <input type="text" class="form-control reg-input-pink" name="member2LinkedInUrl" placeholder="LinkedIn URL" />
+                            </div>
+                        </div>
+
+                        
+                    </div>
+
+                </div>
+
+                <div class="row">
+
+                    <div class="col-md-6">
+                       
+                        <div class="team-member">
+
+                            <div class="reg-label">Team member 3*</div>
+
+                            <div class="form-group">
+                                <input type="text" class="form-control reg-input-pink required" name="member3FirstName" placeholder="First Name" />
+                            </div>
+                            <div class="form-group">
+                                <input type="text" class="form-control reg-input-pink required" name="member3LastName" placeholder="Last Name" />
+                            </div>
+                            <div class="form-group">
+                                <input type="email" class="form-control reg-input-pink required" name="member3Email" placeholder="Email" />
+                            </div>
+                            <div class="form-group">
+                                <div class="col-md-3" id="member3PhoneAreaCodeCol">
+                                    <input type="text" class="form-control reg-input-phone" name="member3PhoneAreaCode" maxlength="3" size="3" placeholder="555" />
+                                </div>
+                                <div class="col-md-3" id="member3PhonefirstthreeCol">
+                                    <input type="text" class="form-control reg-input-phone" name="member3Phonefirstthree" maxlength="3" size="3" placeholder="555" />
+                                </div>
+                                <div class="col-md-3" id="member3PhonelastfourCol">
+                                    <input type="text" class="form-control reg-input-phone" name="member3Phonelastfour" maxlength="4" size="3" placeholder="5555" />
+                                </div>
+                                <div class="col-md-3 no-display" id="member3PhoneCountryCodeCol">
+                                    <input type="text" class="form-control reg-input-phone" name="member3PhoneCountryCode" maxlength="4" size="3" placeholder="Code" />
+                                </div>
+                                <div class="col-md-6 no-display no-padding" id="member3PhoneInternationalCol">
+                                    <input type="text" class="form-control reg-input-int-phone" name="member3PhoneInternational" placeholder="International #">
+                                </div>
+                                <div class="col-md-3" id="member3PhoneExtensionCol">
+                                    <input type="text" class="form-control reg-input-phone reg-input-phone-full-width" name="member3PhoneExtension" maxlength="4" size="3" placeholder="Ext." />
+                                </div>
+                            </div>
+                            <label><input type="checkbox" class="is-international" id="member3PhoneInternationalBox" name="member3PhoneInternationalBox" /> International number?</label>
+                            <div class="form-group">
+                                <input type="text" class="form-control reg-input-pink" name="member3LinkedInUrl" placeholder="LinkedIn URL" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="team-member">
+
+                            <div class="reg-label">Team member 4 (optional)</div>
+
+                            <div class="form-group">
+                                <input type="text" class="form-control reg-input-pink" name="member4FirstName" placeholder="First Name" />
+                            </div>
+                            <div class="form-group">
+                                <input type="text" class="form-control reg-input-pink" name="member4LastName" placeholder="Last Name" />
+                            </div>
+                            <div class="form-group">
+                                <input type="email" class="form-control reg-input-pink" name="member4Email" placeholder="Email" />
+                            </div>
+                            <div class="form-group">
+                                <div class="col-md-3" id="member4PhoneAreaCodeCol">
+                                    <input type="text" class="form-control reg-input-phone" name="member4PhoneAreaCode" maxlength="3" size="3" placeholder="555" />
+                                </div>
+                                <div class="col-md-3" id="member4PhonefirstthreeCol">
+                                    <input type="text" class="form-control reg-input-phone" name="member4Phonefirstthree" maxlength="3" size="3" placeholder="555" />
+                                </div>
+                                <div class="col-md-3" id="member4PhonelastfourCol">
+                                    <input type="text" class="form-control reg-input-phone" name="member4Phonelastfour" maxlength="4" size="3" placeholder="5555" />
+                                </div>
+                                <div class="col-md-3 no-display" id="member4PhoneCountryCodeCol">
+                                    <input type="text" class="form-control reg-input-phone" name="member4PhoneCountryCode" maxlength="4" size="3" placeholder="Code" />
+                                </div>
+                                <div class="col-md-6 no-display no-padding" id="member4PhoneInternationalCol">
+                                    <input type="text" class="form-control reg-input-int-phone" name="member4PhoneInternational" placeholder="International #">
+                                </div>
+                                <div class="col-md-3" id="member4PhoneExtensionCol">
+                                    <input type="text" class="form-control reg-input-phone reg-input-phone-full-width" name="member4PhoneExtension" maxlength="4" size="3" placeholder="Ext." />
+                                </div>
+                            </div>
+                            <label><input type="checkbox" class="is-international" id="member4PhoneInternationalBox" name="member4PhoneInternationalBox" /> International number?</label>
+                            <div class="form-group">
+                                <input type="text" class="form-control reg-input-pink" name="member4LinkedInUrl" placeholder="LinkedIn URL" />
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="row">
+
+                    <div class="col-md-12">
+                        <div class="team-member">
+                            <div class="reg-label">About your team</div>
+                            <div class="form-group">
+                                <input type="text" class="form-control reg-input-black required" name="teamName" placeholder="Team Name" />
+                            </div>
+                            <div class="form-group">
+                                <textarea class="form-control reg-input-startup reg-input-black" name="startUpIdea" placeholder="About your Team" maxlength="2000"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                        <div class="row" id="member-requirements">
+                            <div class="col-md-12">
+                                <h6>* Your team requires at least 3 members and no more than 4, and must be comprised of current students, with the option of one alumni member</h6>
+                            </div>
+                        </div>
+
+
+                <div class="row">
+
+                    <div class="col-md-12">
+                        
+                        <div class="submit-button">
+                            <input type="submit" id="submitButtom" class="btn btn-default challenge-button-register" value="Submit" />
+                        </div>
+
+                    </div>
+
+                </div>
+            </form>
+        </div>

@@ -1,0 +1,145 @@
+﻿@using FifthTribe.Database.HultPrize;
+@using FifthTribe.HultPrize;
+@using FifthTribe.Common;
+@using HultPrizeAtAdmin.Common;
+
+<!-- Modal -->
+<div class="modal fade" id="add-event" tabindex="-1" role="dialog" aria-labelledby="add-event-label" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title" id="add-event-label">Add Event Details</h4>
+      </div>
+      <div class="modal-body">
+        <form id="add-event-form" class="form-horizontal" method="post" action="/school/newevent">
+            <input type="hidden" value="@ViewBag.Result.Organization.OrganizationId" name="orgId" />
+            <div class="form-group">
+                <label for="firstName" class="col-sm-2 control-label">Title</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control required" placeholder="Title" name="title" maxlength="@Event_Table.ColumnLengths.TITLE" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="date" class="col-md-2 control-label">Date and Time</label>
+                <div class="col-sm-10">
+                    <div class="input-group date form_datetime" data-date="" data-date-format="dd MM yyyy - HH:ii P" data-link-field="date">
+                        <input class="form-control required" size="16" type="text" value="" />
+					    <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+                    </div>
+				    <input type="hidden" id="date" name="date" value="" /><br/>
+                </div>
+            </div>
+              <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                  <button type="submit" class="btn btn-primary">Add Event Details</button>
+                </div>
+              </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="edit-event" tabindex="-1" role="dialog" aria-labelledby="edit-event-label" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title" id="edit-event-label">Add Event</h4>
+      </div>
+      <div class="modal-body">
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script id="edit-event-template" type="text/x-handlebars-template">
+
+    {{#ifelse Success}}
+        <form id="save-event-form" class="form-horizontal" method="post" action="/school/saveevent">
+            <input type="hidden" value="{{Event.EventId}}" name="e.EventId" />
+            <input type="hidden" value="{{Event.OrganizationId}}" name="e.OrganizationId" />
+            <div class="form-group">
+                <label for="firstName" class="col-sm-2 control-label">Title</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control required" placeholder="Title" name="e.Title" maxlength="@Event_Table.ColumnLengths.TITLE" value="{{Event.Title}}" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="date" class="col-md-2 control-label">Date and Time</label>
+                <div class="col-sm-10">
+                    <div class="input-group date form_datetime" data-date="" data-date-format="dd MM yyyy - HH:ii P" data-link-field="dateSave">
+                        <input class="form-control required" size="16" type="text" value="{{#convertdate}}{{Event.EventDtime}}{{/convertdate}}" />
+					    <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+                    </div>
+				    <input type="hidden" id="dateSave" name="date" value="{{#convertdateinput}}{{Event.EventDtime}}{{/convertdateinput}}" /><br/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="e.Venue" class="col-sm-2 control-label">Venue</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control required" placeholder="Venue" name="e.Venue" maxlength="@Event_Table.ColumnLengths.VENUE" value="{{Event.Venue}}" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="e.StreetAddress1" class="col-sm-2 control-label">Address</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control required" placeholder="Address" name="e.StreetAddress1" maxlength="@Event_Table.ColumnLengths.STREET_ADDRESS1" value="{{Event.StreetAddress1}}" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="e.StreetAddress2" class="col-sm-2 control-label">Address 2</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control required" placeholder="Address 2" name="e.StreetAddress2" maxlength="@Event_Table.ColumnLengths.STREET_ADDRESS2" value="{{Event.StreetAddress2}}" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="e.City" class="col-sm-2 control-label">City</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control required" placeholder="City" name="e.City" maxlength="@Event_Table.ColumnLengths.CITY" value="{{Event.City}}" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="e.State" class="col-sm-2 control-label">State</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control required" placeholder="State" name="e.State" maxlength="@Event_Table.ColumnLengths.STATE" value="{{Event.State}}" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="e.ZipCode" class="col-sm-2 control-label">Zip Code</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control required" placeholder="Zip Code" name="e.ZipCode" maxlength="@Event_Table.ColumnLengths.ZIP_CODE" value="{{Event.ZipCode}}" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="e.Country" class="col-sm-2 control-label">Country</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control required" placeholder="Country" name="e.Country" maxlength="@Event_Table.ColumnLengths.COUNTRY" value="{{Event.Country}}" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="e.Country" class="col-sm-2 control-label">Additional Information</label>
+                <div class="col-sm-10">
+                    <textarea class="form-control required" name="e.AdditionalInfo" maxlength="@Event_Table.ColumnLengths.ADDITIONAL_INFO">{{Event.AdditionalInfo}}</textarea>
+                </div>
+            </div>
+              <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                  <button type="submit" class="btn btn-primary">Save Event</button>
+                </div>
+              </div>
+        </form>
+    {{else}}
+
+    {{ErrorDisplayMessage}}
+
+    {{/ifelse}}
+</script>

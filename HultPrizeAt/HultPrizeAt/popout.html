@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Thank you for your interest.</title>
+	<link href="http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600,700,300,200,900&Droid+Sans:400,700" rel="stylesheet" type="text/css">
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/home.css">
+  </head>
+<body>
+
+<div style="font-family: Source Sans Pro; font-weight: 200; text-align: left; margin-top: 45px; margin-left: 80px;">
+<h3 style="font-size: 36px; font-weight: 200;">Thank you for your interest.</h3>
+<p style="font-size: 20px; font-weight: normal; margin: 25px 0 0;">We are in the process of organizing Hult Prize at your campus.</p>
+<p style="font-size: 20px; font-weight: normal; margin: 0;">Please stay tuned for team registration or</p>
+<h3 style="font-size: 32px; font-weight: 200; color: #dd0080; margin-top: 5px;">Sign up to become your Campus Director</h3>
+
+<div style="background-image: none; color: #ffffff; padding: 0;" id="top">
+	<form action="/home/process" method="post" class="contact">
+		<div style="width: 250px;" class="field field-name">
+			<input style="background-color: transparent;" type="text" placeholder="Name" value="" id="name_schoolform" name="name" class="text">
+		</div>
+		<div style="width: 312px;" class="field field-school">
+			<input style="background-color: transparent;"  type="text" placeholder="School" value="" id="school_schoolform" name="school" class="text">
+		</div>
+		<div style="width: 405px;" class="field field-email">
+			<input style="background-color: transparent;"  type="text" placeholder="Email" value="" id="email_schoolform" name="email" class="email">
+		</div>
+		<div class="field field-submit">
+			<input type="button" class="submit-btn submit-btn-popup" value="Submit" />
+		</div>
+	</form> 
+</div>
+</div>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+<script>
+$(function(){
+	$('.submit-btn-popup').on('click',function(e){
+		e.preventDefault();
+	
+			
+			// This form
+			var form = $(this).parents('.contact');
+			
+			// valid bool
+			var validForm = validateForm(form);
+
+			if ( validForm ) {
+				
+				$.ajax({
+					type: "POST",
+					url: form.attr('action'),
+					data: form.serialize(),
+					success: function(data){
+						
+						if ( data == "success" ) {
+							alert("Thank you for submitting your information.");
+							parent.$.fancybox.close();												
+						}
+					},
+				});
+				
+			}
+			
+		});		
+	
+
+});
+
+function validateEmail(email) {
+    var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(email);
+}	
+
+function validateForm(form){
+	
+		var validForm = true;
+		
+		// Validate each field
+			$("input",form).each(function(){
+				
+				var val = $(this).val();
+				
+				if ( val == '' ) {
+					alert('You did not complete the form.');
+					validForm = false;
+					return false;
+				} else {
+				
+					// email validation
+					if ( $(this).hasClass('email') ) {
+						
+						var validEmail = validateEmail(val);
+						
+						if ( !validEmail ) {
+							alert('Please enter a valid email address.');
+							validForm = false;
+							return false;
+						}
+					}
+					
+				}
+				
+			});
+			
+			return validForm;
+
+}
+</script>
+</body>
+</html>

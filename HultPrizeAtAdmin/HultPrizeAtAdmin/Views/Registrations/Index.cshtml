@@ -1,0 +1,65 @@
+﻿@{
+    ViewBag.Title = "Index";
+}
+@using FifthTribe.HultPrize;
+@using HultPrizeAtAdmin.Common;
+
+<h1 class="page-header">Registrations</h1>
+
+@{
+    int env = ViewBag.RuntimeEnvironment;
+
+    @:<div id="registrations">
+        <table class="table table-hult table-datatable">
+            <thead>
+                <tr>
+                    <th>School</th>
+                    <th>Number of Teams</th>
+                    <th>Number of Members</th>
+                </tr>
+            </thead>
+            <tbody>
+        @{
+            List<HultBusiness.SchoolSummaryItem> schools = HultBusiness.Organization.GetSchoolSummaries(env);
+            // Loop through each school
+            foreach (HultBusiness.SchoolSummaryItem school in schools)
+            {
+                <tr>
+                    <td>
+                        @school.OrganizationName
+                    </td>
+                    <td>
+                        @school.NumberOfTeams
+                    </td>
+                    <td>
+                        @school.NumberOfTeamMembers
+                    </td>
+                </tr>
+            }
+        }
+            </tbody>
+        </table>
+    @:</div>
+}
+
+<script id="registration-details-template" type="text/x-handlebars-template">
+    {{#ifelse Success}}
+        {{#each Registration.TeamMembers}}
+            {{#ifintboolfalse CaptainFlag}}
+            <div class="team-member">
+                <span class="team-member-name col-xs-3">
+                    Member: <strong>{{this.NameFirst}} {{this.NameLast}}</strong>
+                </span>
+                <span class="team-member-email col-xs-3">
+                    Email: <strong>{{this.Email}}</strong>
+                </span>
+                <span class="team-member-phone col-xs-3">
+                    Phone: <strong>{{this.PhoneDetails.Display}}</strong>
+                </span>
+            </div>
+            {{/ifintboolfalse}}
+        {{/each}}
+    {{else}}
+        {{ErrorDisplayMessage}}
+    {{/ifelse}}
+</script>

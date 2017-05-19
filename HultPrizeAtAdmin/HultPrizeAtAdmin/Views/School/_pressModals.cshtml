@@ -1,0 +1,91 @@
+﻿@using FifthTribe.Database.HultPrize;
+@using FifthTribe.HultPrize;
+@using FifthTribe.Common;
+@using HultPrizeAtAdmin.Common;
+
+<div class="modal fade" id="add-press" tabindex="-1" role="dialog" aria-labelledby="add-press-label" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title" id="add-press-label">Add Press</h4>
+      </div>
+      <div class="modal-body">
+        <form id="add-press-form" class="form-horizontal" method="post" action="/school/newpress">
+            <input type="hidden" value="@ViewBag.Result.Organization.OrganizationId" name="orgId" />
+            <div class="form-group">
+                <label for="title" class="col-sm-2 control-label">Press Title</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control required" placeholder="Press Title" maxlength="@Press_Table.ColumnLengths.TITLE" name="title" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="name" class="col-sm-2 control-label">Press URL</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control required" placeholder="Press URL" maxlength="@Press_Table.ColumnLengths.PRESS_URL" name="url" />
+                </div>
+            </div>
+              <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                  <button type="submit" class="btn btn-primary">Add Press</button>
+                </div>
+              </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="edit-press" tabindex="-1" role="dialog" aria-labelledby="edit-press-label" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title" id="edit-press-label">Edit Press</h4>
+      </div>
+      <div class="modal-body">
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script id="edit-press-template" type="text/x-handlebars-template">
+
+    {{#ifelse Success}}
+        <form id="save-press-form" class="form-horizontal" method="post" action="/school/savepress">
+            <input type="hidden" value="{{Press.OrganizationId}}" name="press.OrganizationId" />
+            <input type="hidden" value="{{Press.PressId}}" name="press.PressId" />
+            <input type="hidden" value="{{Press.DisplayOrder}}" name="press.DisplayOrder" />
+            <div class="form-group">
+                <label for="title" class="col-sm-2 control-label">Title</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control required" placeholder="Press Title" maxlength="@Press_Table.ColumnLengths.TITLE" name="press.Title" value="{{Press.Title}}" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="url" class="col-sm-2 control-label">URL</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control required" placeholder="Press URL" maxlength="@Press_Table.ColumnLengths.PRESS_URL" name="press.PressUrl" value="{{Press.PressUrl}}" />
+                    <p class="help-block">Must include "http://".</p>
+                </div>
+            </div>
+              <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                  <button type="submit" class="btn btn-primary">Save Press</button>
+                </div>
+              </div>
+        </form>
+    {{else}}
+
+    {{ErrorDisplayMessage}}
+
+    {{/ifelse}}
+</script>
+

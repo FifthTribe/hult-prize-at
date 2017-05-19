@@ -1,0 +1,194 @@
+﻿@{
+    ViewBag.Title = "Index";
+}
+@using FifthTribe.HultPrize;
+@using HultPrizeAtAdmin.Common;
+
+<h1 class="page-header">Registration</h1>
+
+@{
+
+    // Get current user
+    Bus_User currentUser = HultPrizeAtAdmin.HultPrizeAtApplication.CurrentUser;
+    
+    // Get the result
+    Bus_Organization_Result result = ViewBag.Result;
+
+    // Get the current environment from view bag
+    int env = ViewBag.RuntimeEnvironment;
+
+    // General Success Message
+    if (Session["RegistrationSuccessMessage"] != null)
+        {
+        <div class="row">
+            <div class="alert alert-success">@Session["RegistrationSuccessMessage"]</div>
+        </div>
+            Session["RegistrationSuccessMessage"] = null;
+      }
+      
+    // General Error Message
+    if (Session["RegistrationErrorMessage"] != null)
+      {
+        <div class="row">
+            <div class="alert alert-danger">@Session["RegistrationErrorMessage"]</div>
+        </div>
+          Session["RegistrationErrorMessage"] = null;
+    }        
+    
+    // Check if it was successful
+    if (result != null && result.Success)
+    {
+        // Get the school
+        Bus_Organization school = result.Organization;
+
+        // Get the registrations
+        List<HultBusiness.RegistrationSummaryItem> registrations = HultBusiness.Registrations.GetRegistrationSummaryList(env, school.OrganizationId);
+
+        @:<div id="registrations">
+
+        <table class="table table-hult table-datatable">
+            <thead>
+                <tr>
+                    <th>Team Name</th>
+                    <th>Captain</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Date Submitted</th>
+                    @{
+                        if ( currentUser.IsHultAdmin || currentUser.IsSuperUser )
+                        {
+                        <th></th>
+                        }
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    List<HultBusiness.SchoolSummaryItem> schools = HultBusiness.Organization.GetSchoolSummaries(env);
+                    // Loop through each school
+                    foreach (HultBusiness.RegistrationSummaryItem registration in registrations)
+                    {
+                        <tr>
+                            <td>
+                                @{
+                                // Check if team name exists
+                                if ( registration.TeamName.Length > 0 )
+                                {
+                                    @registration.TeamName
+                                }
+                                else
+                                {
+                                    // It does not exist
+                                    <em>(not specified)</em>
+                                }
+                            }
+                                <a href="#" class="team-details-btn btn-xs btn btn-primary pull-right" data-toggle="modal" data-target="#team-details" data-id="@registration.RegistrationId">Team Details</a>
+                            </td>
+                            <td>
+                                @registration.CaptainName
+                            </td>
+                            <td>
+                                @registration.Email
+                            </td>
+                            <td>
+                                @registration.Telephone
+                            </td>
+                            <td>
+                                @registration.SubmissionDate
+                            </td>
+                            @{
+                                if ( currentUser.IsHultAdmin || currentUser.IsSuperUser )
+                                {
+                                <td>
+                                    <form action="/registration/delete" method="post">
+                                        <input type="hidden" value="@registration.RegistrationId" name="registrationId" />
+                                        <button class="btn btn-primary btn-sm" type="submit">Delete <i class="glyphicon glyphicon-trash"></i></button>
+                                    </form>
+                                </td>
+                                }
+                            }
+
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+        @:</div>
+    }
+    else
+    {
+        // No school found
+        <div class="alert alert-danger">No school found.</div>
+    }
+}
+
+<script id="team-details-template" type="text/x-handlebars-template">
+    {{#ifelse Success}}
+        <table class="table table-bordered">
+            <tr>
+                <th>Team Name</th>
+                <td>{{Registration.TeamName}}</td>
+            </tr>
+            <tr>
+                <th>About</th>
+                <td>{{Registration.Idea}}</td>
+            </tr>
+            <tr>
+                <th>Number of Team Members</th>
+                <td>{{Registration.NumberOfTeamMembers}}</td>
+            </tr>
+            <tr>
+                <th>Captain</th>
+                <td>
+                    {{#each Registration.TeamMembers}}
+                        {{#ifintbooltrue CaptainFlag}}
+                            {{this.NameFirst}} {{this.NameLast}}<br />
+                                <a href="mailto:{{this.Email}}">{{this.Email}}</a><br />
+                                {{this.PhoneDetails.Display}}
+                                {{#if this.LinkedInUrl}}<br /><a href="{{this.LinkedInUrl}}" target="_blank">{{this.LinkedInUrl}}</a> {{/if}}
+                        {{/ifintbooltrue}}
+                    {{/each}}
+                </td>
+            </tr>
+            <tr>
+                <th>Team Members</th>
+                <td>
+                    <ul class="team-members-list">
+                    {{#each Registration.TeamMembers}}
+                        {{#ifintboolfalse CaptainFlag}}
+                            <li>{{this.NameFirst}} {{this.NameLast}}<br />
+                                <a href="mailto:{{this.Email}}">{{this.Email}}</a><br />
+                                {{this.PhoneDetails.Display}}</li>
+                        {{/ifintboolfalse}}
+                    {{/each}}
+                    </ul>
+                </td>
+            </tr>
+        </table>
+
+    
+
+
+    {{else}}
+        {{ErrorDisplayMessage}}
+    {{/ifelse}}
+</script>
+
+
+<!-- Modal -->
+<div class="modal fade" id="team-details" tabindex="-1" role="dialog" aria-labelledby="team-details-label" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title" id="team-details-label">Team Details</h4>
+      </div>
+      <div class="modal-body">
+        
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>

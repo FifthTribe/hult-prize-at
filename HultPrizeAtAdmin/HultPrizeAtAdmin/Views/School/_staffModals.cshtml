@@ -1,0 +1,122 @@
+﻿@using FifthTribe.Database.HultPrize;
+@using FifthTribe.HultPrize;
+@using FifthTribe.Common;
+@using HultPrizeAtAdmin.Common;
+
+<!-- Modal -->
+<div class="modal fade" id="add-staff" tabindex="-1" role="dialog" aria-labelledby="add-staff-label" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title" id="add-staff-label">Add Staff Member</h4>
+      </div>
+      <div class="modal-body">
+        <form id="add-staff-form" class="form-horizontal" method="post" action="/school/newstaff">
+            <input type="hidden" value="@ViewBag.Result.Organization.OrganizationId" name="orgId" />
+            <div class="form-group">
+                <label for="firstName" class="col-sm-2 control-label">First Name</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control required" placeholder="First Name" name="firstName" maxlength="@Staff_Table.ColumnLengths.NAME_FIRST" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="lastName" class="col-sm-2 control-label">Last Name</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control required" placeholder="Last Name" name="lastName" maxlength="@Staff_Table.ColumnLengths.NAME_LAST" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="title" class="col-sm-2 control-label">Position</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control required" placeholder="Position" name="position" maxlength="@Staff_Table.ColumnLengths.POSITION" />
+                </div>
+            </div>
+              <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                  <button type="submit" class="btn btn-primary">Add Staff Member</button>
+                </div>
+              </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="edit-staff" tabindex="-1" role="dialog" aria-labelledby="edit-staff-label" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title" id="edit-staff-label">Edit Staff</h4>
+      </div>
+      <div class="modal-body">
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script id="edit-staff-template" type="text/x-handlebars-template">
+
+    {{#ifelse Success}}
+        <form id="save-judge-form" class="form-horizontal" method="post" action="/school/savestaff">
+            <input type="hidden" value="{{Staff.OrganizationId}}" name="staff.OrganizationId" />
+            <input type="hidden" value="{{Staff.StaffId}}" name="staff.StaffId" />
+            <input type="hidden" value="{{Staff.DisplayOrder}}" name="staff.DisplayOrder" />
+            <input type="hidden" value="{{Staff.ImageFilename}}" name="staff.ImageFilename" />
+            <input type="hidden" value="{{Staff.ImageUploaded}}" name="staff.ImageUploaded" />
+            <div class="form-group">
+                <label for="staff.NameFirst" class="col-sm-2 control-label">First Name</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control required" placeholder="First Name" name="staff.NameFirst" maxlength="@Staff_Table.ColumnLengths.NAME_FIRST" value="{{Staff.NameFirst}}" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="staff.NameLast" class="col-sm-2 control-label">Last Name</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control required" placeholder="Last Name" name="staff.NameLast" maxlength="@Staff_Table.ColumnLengths.NAME_LAST" value="{{Staff.NameLast}}" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="staff.Title" class="col-sm-2 control-label">Position</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control required" placeholder="Position" name="staff.Position" maxlength="@Staff_Table.ColumnLengths.POSITION" value="{{Staff.Position}}" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="staff.TwitterUrl" class="col-sm-2 control-label">Twitter</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control required" placeholder="Twitter" name="staff.TwitterUrl" maxlength="@Staff_Table.ColumnLengths.TWITTER_URL" value="{{Staff.TwitterUrl}}" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="title" class="col-sm-2 control-label">Facebook</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control required" placeholder="Facebook" name="staff.FacebookUrl" maxlength="@Staff_Table.ColumnLengths.FACEBOOK_URL" value="{{Staff.FacebookUrl}}" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="title" class="col-sm-2 control-label">LinkedIn</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control required" placeholder="LinkedIn" name="staff.LinkedInUrl" maxlength="@Staff_Table.ColumnLengths.LINKED_IN_URL" value="{{Staff.LinkedInUrl}}" />
+                </div>
+            </div>
+              <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                  <button type="submit" class="btn btn-primary">Save Staff Member</button>
+                </div>
+              </div>
+        </form>
+    {{else}}
+
+    {{ErrorDisplayMessage}}
+
+    {{/ifelse}}
+</script>

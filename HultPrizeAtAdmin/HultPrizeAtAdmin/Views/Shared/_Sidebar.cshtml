@@ -1,0 +1,89 @@
+﻿      @{
+          // Get the current controller
+          string controller = ViewContext.RouteData.Values["Controller"].ToString().ToLower();
+          
+          // Get the current action
+          string action = ViewContext.RouteData.Values["Action"].ToString().ToLower();         
+      }
+
+<div class="logo">
+    <img src="~/images/hult-prize-logo.png" alt="Hult Prize At" />
+</div>
+
+<ul class="nav nav-sidebar">
+@{
+    if ( Session["schoolId"] != null )
+    {
+        if (HultPrizeAtAdmin.HultPrizeAtApplication.CurrentUser.IsHultAdmin || HultPrizeAtAdmin.HultPrizeAtApplication.CurrentUser.IsSuperUser)
+        {
+            <li class="menu-label-nav"><h3>School Admin Menu</h3></li>
+        }
+        
+        
+        <li class="@( controller == "school" && action == "edit" ? "active" : "")">
+            <a href="/school">
+                <i class="glyphicon glyphicon-pencil"></i><br />
+                Page Content
+            </a>
+        </li>
+        <li class="@( controller == "registration" && action == "index" ? "active" : "")">
+            <a href="/registration">
+                <i class="fa fa-folder"></i><br />
+                Registration
+            </a>
+        </li>
+        <li class="@( controller == "users" && action == "index" ? "active" : "")">
+            <a href="/users">
+                <i class="glyphicon glyphicon-user"></i><br />
+                Users
+            </a>
+        </li>
+        <li class="@( controller == "messages" && action == "index" ? "active" : "")">
+            <a href="/messages">
+                <i class="glyphicon glyphicon-envelope"></i><br />
+                Messages
+            </a>
+        </li>
+    }
+        
+}
+</ul>
+
+
+
+<ul class="nav nav-sidebar">
+
+@{
+    if (HultPrizeAtAdmin.HultPrizeAtApplication.CurrentUser.IsHultAdmin || HultPrizeAtAdmin.HultPrizeAtApplication.CurrentUser.IsSuperUser)
+    {
+        <li class="menu-label-nav"><h3>Hult Admin Menu</h3></li>
+        
+        <li class="@( controller == "announcements" && action == "index" ? "active" : "")">
+            <a href="/announcements">
+                <i class="glyphicon glyphicon-comment"></i><br />
+                Announcements
+            </a>
+        </li>
+        <li class="@( controller == "schools" && action == "index" ? "active" : "")">
+            <a href="/schools">
+                <i class="fa fa-institution"></i><br />
+                Schools
+            </a>
+        </li>
+        <li class="@( controller == "registrations" && action == "index" ? "active" : "")">
+            <a href="/registrations">
+                <i class="fa fa-folder"></i><br />
+                Registrations
+            </a>
+        </li>
+    }
+
+}
+        <li class="@( controller == "account" && action == "index" ? "active" : "")">
+            <a href="/account">
+                <i class="fa fa-gear"></i><br />
+                My Profile
+            </a>
+        </li>    
+
+</ul>

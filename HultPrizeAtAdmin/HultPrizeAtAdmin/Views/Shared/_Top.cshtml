@@ -1,0 +1,32 @@
+﻿@{
+    ViewBag.Title = "_Top";
+}
+
+@using FifthTribe.Database.HultPrize;
+@using FifthTribe.HultPrize;
+@using FifthTribe.Common;
+@{
+    /*
+    Bus_Organization school = null;
+    if ((HultPrizeAtAdmin.HultPrizeAtApplication.CurrentUser != null && HultPrizeAtAdmin.HultPrizeAtApplication.CurrentUser.IsSchoolAdmin) || Request.Url.ToString().Contains("id"))
+    {
+        school = ViewBag.Result.Organization;
+    }
+    */
+}
+
+<div class="top-bar">
+    <a href="/account/logout" class="pull-right btn btn-default btn-lg">Logout</a>
+    @{
+        /*
+        if ((HultPrizeAtAdmin.HultPrizeAtApplication.CurrentUser != null && HultPrizeAtAdmin.HultPrizeAtApplication.CurrentUser.IsSchoolAdmin) || Request.Url.ToString().Contains("id"))
+        {
+            <button onclick="window.open('@school.SchoolPublicURL(ViewBag.RunTimeEnvironment)', 'newwindow', 'width=1300, height=900'); return false;" class="pull-right btn btn-lg btn-primary">Preview Page</button>
+
+            <button id="activation" class="pull-right btn btn-lg @(school.ExtraInformation.IsPageActive ? "btn-danger" : "btn-success")">
+                @(school.ExtraInformation.IsPageActive ? "Deactivate" : "Activate")
+            </button>
+        }
+         * */
+    }
+</div>

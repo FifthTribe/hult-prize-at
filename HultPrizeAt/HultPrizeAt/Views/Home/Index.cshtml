@@ -1,0 +1,24 @@
+﻿@{
+    ViewBag.Title = "Index";
+}
+
+@using FifthTribe.HultPrize;
+
+@{
+    Bus_Organization school = ViewBag.School;
+}
+
+@{
+
+    if ( school != null ) {
+        Layout = null;
+        
+        @Html.Partial("~/Views/Home/_school.cshtml")
+    
+    }
+    else
+    {
+        // Not a school show standard layout
+        @Html.Partial("~/Views/Home/_home.cshtml")
+    }
+}

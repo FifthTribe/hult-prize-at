@@ -1,0 +1,134 @@
+﻿@{
+    ViewBag.Title = "Index";
+}
+@using FifthTribe.Database.HultPrize;
+@using FifthTribe.HultPrize;
+@using FifthTribe.Common;
+@using HultPrizeAtAdmin.Common;
+
+@{
+    // Get list of announcements
+    List<Bus_Announcement> announcements = ViewBag.Announcements;
+}
+
+<h1 class="page-header">Announcements</h1>
+
+@{
+    if (Session["AnnouncementsSuccessMessage"] != null)
+    {
+        <div class="alert alert-success">@Session["AnnouncementsSuccessMessage"]</div>
+        Session["AnnouncementsSuccessMessage"] = null;
+    }
+
+    if (Session["AnnouncementsErrorMessage"] != null)
+    {
+        <div class="alert alert-success">@Session["AnnouncementsErrorMessage"]</div>
+        Session["AnnouncementsErrorMessage"] = null;
+    }        
+}
+
+
+<div id="new-announcement">
+
+    <form class="form form-horizontal" method="post" action="/announcements/new">
+        <input type="hidden" name="postedByUserId" value="@HultPrizeAtAdmin.HultPrizeAtApplication.CurrentUser.UserId" />
+        <div class="form-group">
+            <label for="recipientType" class="col-sm-2 control-label">Audience</label>
+            <div class="col-sm-10">
+                <select class="form-control required" name="recipientType">
+                    @{
+                        foreach (WebCommon.EnumItem type in HultCommon.AnnouncementRecipientTypes.GetList() )
+                        {
+                            <option value="@type.IntegerValue">@type.StringValue</option>
+                        }
+                    }
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="messageType" class="col-sm-2 control-label">Message Type</label>
+            <div class="col-sm-10">
+                <select class="form-control required" name="messageType">
+                    @{
+                        foreach (WebCommon.EnumItem type in HultCommon.AnnouncementMessageTypes.GetList() )
+                        {
+                            <option value="@type.IntegerValue">@type.StringValue</option>
+                        }
+                    }
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="message" class="col-sm-2 control-label">Message</label>
+            <div class="col-sm-10">
+                <textarea name="message" class="form-control required" placeholder="Message"></textarea>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                <input type="submit" class="btn btn-hult-lightblue" value="Add New Announcement" />
+            </div>
+        </div>
+    </form>
+
+</div>
+
+
+<div id="announcements">
+    <h3>History</h3>
+    <table class="table table-bordered table-hult">
+        <thead>
+            <tr>
+                <th>Publish Date</th>            
+                <th>Status</th>
+                <th>Change Status</th>
+                <th>Author</th>
+                <th>Audience</th>
+                <th>Type</th>
+                <th>Content</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        @{
+            foreach ( Bus_Announcement announcement in announcements )
+            {
+                <tr>
+ 
+                    
+                        @{ if (announcement.PublishFlag == 1)
+                           {
+                               <td>@announcement.PublishDTime_String</td>
+                               <td>Published</td>
+                               <td> <form method="post" action="/announcements/status">
+                                       <input type="hidden" name="announcementId" value="@announcement.AnnouncementId" />
+                                       <input type="hidden" name="status" value="unpublish" />
+                                       <button class="btn btn-warning btn-sm" type="submit">Hide</button>
+                                   </form>    
+                               </td>   
+                           }
+                           else
+                           {               
+                               <td>N/A</td>
+                               <td>Hidden</td>
+                               <td> 
+                                    <form method="post" action="/announcements/status">
+                                       <input type="hidden" name="announcementId" value="@announcement.AnnouncementId" />
+                                       <input type="hidden" name="status" value="publish" />
+                                       <button class="btn btn-success btn-sm" type="submit">Publish</button>
+                                   </form>    
+                               </td>                           
+                           }
+                        }
+                    
+                    <td>@announcement.PostedByUserName</td>
+                    <td>@announcement.RecipientType_String</td>
+                    <td class="message-type-@announcement.MessageType_String.ToLower()">@announcement.MessageType_String</td>
+                    <td>@Html.Raw(HttpUtility.HtmlDecode(@announcement.MessageContent))</td>
+                    <td><form method="post" action="/announcements/delete"><input type="hidden" name="announcementId" value="@announcement.AnnouncementId" /><button class="btn btn-default" type="submit"><i class="glyphicon glyphicon-trash"></i> Delete</button></form></td>
+                </tr>
+            }
+        }
+        </tbody>
+    </table>
+</div>

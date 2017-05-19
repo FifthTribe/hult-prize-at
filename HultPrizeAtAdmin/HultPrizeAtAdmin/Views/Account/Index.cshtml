@@ -1,0 +1,86 @@
+﻿@{
+    ViewBag.Title = "Index";
+}
+@using FifthTribe.HultPrize;
+@using HultPrizeAtAdmin.Common;
+@{
+    // Get current user logged in
+    Bus_User currentUser = HultPrizeAtAdmin.HultPrizeAtApplication.CurrentUser;
+
+}
+
+<h1 class="page-header">My Profile</h1>
+
+
+@{
+    if ( Session["UserSuccessMessage"] != null )
+    {
+        <div class="alert alert-success">Successfully updated your information.</div>
+        Session["UserSuccessMessage"] = null;
+    }
+}
+
+
+<div id="edit-new-user">
+    <h2>Update My Info</h2>
+    <form class="form-horizontal" action="/users/edit" method="post" enctype="multipart/form-data">
+        <input type="hidden" name="userId" value="@currentUser.UserId" />
+        <div class="form-group">
+            <label for="firstName" class="col-sm-2 control-label">Name</label>
+            <div class="col-sm-5">
+                <input type="text" class="form-control" name="firstName" value="@currentUser.NameFirst">
+            </div>
+            <div class="col-sm-5">
+                <input type="text" class="form-control" name="lastName" value="@currentUser.NameLast">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="email" class="col-sm-2 control-label">Email</label>
+            <div class="col-sm-10">
+                <input type="email" class="form-control email" name="email" value="@currentUser.Email">
+            </div>
+        </div>
+        <div class="form-group has-feedback has-international-option">
+            <label for="phone" class="col-sm-2 control-label">Phone Number</label>
+            <div class="col-sm-10">
+                <div class="input-inline input-small north-american @( currentUser.PhoneDetails.IsInternational ? "hide" : "" )">
+                    <input type="text" class="form-control only-numbers minlength no-dash-input @( !currentUser.PhoneDetails.IsInternational ? "required" : "" )" name="phoneAreaCode" maxlength="3" size="3" value="@currentUser.PhoneDetails.AreaCode" />
+                    <span class="glyphicon glyphicon-remove form-control-feedback"></span>
+                </div> <span class="input-inline north-american phone-dash @( currentUser.PhoneDetails.IsInternational ? "hide" : "" )">-</span>
+                <div class="input-inline input-small north-american @( currentUser.PhoneDetails.IsInternational ? "hide" : "" )">
+                    <input type="text" class="form-control only-numbers minlength no-dash-input @( !currentUser.PhoneDetails.IsInternational ? "required" : "" )" name="phoneFirstThree" maxlength="3" size="3" value="@currentUser.PhoneDetails.FirstThree" />
+                    <span class="glyphicon glyphicon-remove form-control-feedback"></span>
+                </div> <span class="input-inline north-american phone-dash @( currentUser.PhoneDetails.IsInternational ? "hide" : "" )">-</span>
+                <div class="input-inline input-small north-american @( currentUser.PhoneDetails.IsInternational ? "hide" : "" )">
+                    <input type="text" class="form-control only-numbers minlength no-dash-input @( !currentUser.PhoneDetails.IsInternational ? "required" : "" )" name="phoneLastFour" maxlength="4" size="3" value="@currentUser.PhoneDetails.LastFour" />
+                    <span class="glyphicon glyphicon-remove form-control-feedback"></span>
+                </div>
+                <div class="input-inline input-small international @( !currentUser.PhoneDetails.IsInternational ? "hide" : "" )">
+                    <input type="text" class="form-control @( currentUser.PhoneDetails.IsInternational ? "required" : "" )" name="phonePhoneNumberDigits" placeholder="International Number" value="@currentUser.PhoneDetails.InternationalPhoneNumber" />
+                </div>
+                <div class="input-inline input-small phone-extension">
+                    <span class="inline">Ext</span><input type="text" class="form-control only-numbers no-dash-input" placeholder="Ext." value="@currentUser.PhoneDetails.Extension" name="phoneExtension" />
+                </div>
+                <div class="clearfix is-international-wrap input-clear">
+                    <label><input type="checkbox" class="is-international" @( currentUser.PhoneDetails.IsInternational ? "checked" : "" ) /> International number?</label>
+                    <input type="hidden" class="is-international-field" name="phoneIsInternational" value="@( currentUser.PhoneDetails.IsInternational ? "true" : "false" )" />
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group has-feedback country-code @( !currentUser.PhoneDetails.IsInternational ? "hide" : "" )">
+            <label for="info.Telephone.CountryCode" class="col-sm-2 control-label">Phone Country Code</label>
+            <div class="col-sm-10">
+                <div class="input-small">
+                    <input type="text" class="form-control @( currentUser.PhoneDetails.IsInternational ? "required" : "" )" name="phoneCountryCode" value="@currentUser.PhoneDetails.CountryCode" size="5" maxlength="5" />
+                    <span class="glyphicon glyphicon-remove form-control-feedback"></span>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                <button type="submit" class="btn btn-default">Update</button>
+            </div>
+        </div>
+    </form>
+</div>

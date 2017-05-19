@@ -1,0 +1,54 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Hult Prize At</title>
+
+    <link href='http://fonts.googleapis.com/css?family=Lato:300,400,700,900' rel='stylesheet' type='text/css' />
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" />
+    <link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="//cdn.datatables.net/buttons/1.0.3/css/buttons.dataTables.min.css" rel="stylesheet"/>
+    <link href="//cdn.datatables.net/1.10.9/css/jquery.dataTables.css" rel="stylesheet" />
+    <link href="//cdn.datatables.net/plug-ins/28e7751dbec/integration/bootstrap/3/dataTables.bootstrap.css" rel="stylesheet" />
+    <link href="/css/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+
+      @{
+          // Get the current controller
+          string controller = ViewContext.RouteData.Values["Controller"].ToString().ToLower();
+          
+          // Get the current action
+          string action = ViewContext.RouteData.Values["Action"].ToString().ToLower();
+      }
+
+      @{
+
+          <link rel="stylesheet" href="/css/common.css" />
+          
+          // If on login page
+          if ( controller == "account" && action != "index" )
+          {
+            <link rel="stylesheet" href="/css/login.css" />  
+          }
+          else
+          {
+            <link rel="stylesheet" href="/css/styles.css" />
+          }
+      }
+
+
+
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+      <link href="//netdna.bootstrapcdn.com/respond-proxy.html" id="respond-proxy" rel="respond-proxy" />
+      <link href="/images/respond.proxy.gif" id="respond-redirect" rel="respond-redirect" />
+      <script src="/js/respond.proxy.js"></script>
+    <![endif]-->
+  </head>
+<body class="@controller-@action">

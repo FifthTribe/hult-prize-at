@@ -1,0 +1,595 @@
+﻿@{
+    ViewBag.Title = "_body";
+}
+
+@using FifthTribe.HultPrize;
+@using HultPrizeAt.Common;
+
+@{
+    // Get the school from the view bag
+    Bus_Organization school = ViewBag.School;
+    
+    // Get environment from view bag
+    int env = ViewBag.RunTimeEnvironment;
+}
+
+<div id="body">
+    @{
+        if (school.Announcements.Count > 0) {
+            <div id="announcement" class="container-fluid">
+                <section class="section">
+                    <i class="glyphicon glyphicon-remove" id="remove-announcement"></i>
+                    <div id="announcement-content">
+                        <h2>Hult Prize Announcement:</h2>
+
+                        <h3>
+                            @Html.Raw(HttpUtility.HtmlDecode(@school.Announcements.First().MessageContent))
+                        </h3>
+                    </div>
+                </section>
+            </div>
+        }
+    }
+
+    @{
+        if ( school.ExtraInformation.ShowWinner_Bool )
+        {
+            <div id="winner" class="container-fluid">
+                <section class="section">
+                    <div class="row">
+                        <div class="col-md-6 col-md-offset-1">
+                            <h3>@school.ExtraInformation.WinnerCaption</h3>
+                        </div>
+                        <div class="col-md-4">
+                            <img class="winner-image" src="@school.OrganizationDirectory_URL(env)/@school.ExtraInformation.WinnerImageFilename" alt="@school.ExtraInformation.WinnerCaption" border="0" />
+                        </div>
+                    </div>
+                </section>
+            </div>
+        }
+    }
+
+    <div id="message" class="container-fluid @(school.ExtraInformation.ShowDirectorMessage_Bool ? "" : "no-display")">
+        <section class="section">
+            <div class="row">
+                <div id="director-image-box" class="col-md-4">
+                    @{
+                        if (school.ExtraInformation.CampusDirectorImageUploaded == 1)
+                        {
+                            <img src="@Path.Combine(school.OrganizationDirectory_URL(env),school.ExtraInformation.CampusDirectorImageName)" class="director-image img-circle" alt="@school.CampusDirectorInfo.NameFirst @school.CampusDirectorInfo.NameLast" />
+                        }
+                        else
+                        {
+                            <img src="~/images/school/director.png" class="director img-circle" alt="Director's Image" />
+                        }
+                    }
+                </div>
+                <div id="director-message-box" class="col-md-8">
+                    <h3>
+                        Message from Campus Director
+                    </h3>
+
+                    <br>
+
+                    <p>
+                        "@school.ExtraInformation.DirectorMessage"
+                    </p>
+
+                    <br>
+
+                    <p id="signature">@school.CampusDirectorInfo.NameFirst @school.CampusDirectorInfo.NameLast<br />
+                        <a href="mailto:@school.CampusDirectorInfo.Email">@school.CampusDirectorInfo.Email</a>
+                    </p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <div class="container-fluid" id="challenge">
+        <h1>
+            Win $1,000,000 in start-up funding
+        </h1>
+
+        <br><br>
+
+        <section class="section">
+
+            <div class="row">
+                <div class="col-md-7" id="video-detail">
+                    <h1>The 2016 Challenge</h1>
+
+                    <h2>CROWDED URBAN SPACES</h2>
+
+                    <h4>Doubling income by connecting people, goods, services, and capital</h4>
+
+                    <div class="row">
+                        <div class="col-md-6 button1">
+                            <a href="http://www.hultprize.org/en/compete/2016-prize/2016-challenge/" target="_blank">
+                                <div class="challenge-button-details">Details</div>
+                            </a>
+                        </div>
+
+                        <div class="col-md-6 button2">
+                            <a href="#register">
+                                <div class="challenge-button-register scroll-link" data-id="register">Register</div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-5 video-container">
+                    <a href="#" id="show-video-popup" data-toggle="modal" data-target="#video-popup"><img src="/images/school/video.png" border="0" /></a>
+                    <p>Hult Prize Vision</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <div class="container-fluid" id="compete">
+        <section class="section">
+            <div class="row">
+                <div class="col-md-12">
+                    <h1>
+                        Competing in Hult Prize is easy
+                    </h1>
+                </div>
+            </div>
+
+            <div class="row" id="challenge-process">
+                <div class="col-md-3">
+                    <div class="col-md-10">
+                        <a href="http://media-hult.ef.com/~/media/Hult%20Case%20Global%20Challenge/2016presidentschallenge.pdf" target="_blank"><img src="~/images/school/download.png" alt="Download"></a>
+
+                        <h2>Download</h2>
+                        <h3>the 2016 President's challenge</h3>
+                    </div>
+
+                    <div class="col-md-2">
+                        <img src="~/images/school/arrow.png" alt="Arrow" class="arrow">
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="col-md-10">
+                        <img src="~/images/school/recruit.png" alt="Recruit">
+
+                        <h2>Recruit</h2>
+                        <h3>your team</h3>
+                    </div>
+
+                    <div class="col-md-2">
+                        <img src="~/images/school/arrow.png" alt="Arrow" class="arrow">
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="col-md-10">
+                        <a href="#register" class="scroll-link" data-id="register"><img src="~/images/school/compete-register.png" alt="Register"></a>
+
+                        <h2>Register</h2>
+                        <h3>your team</h3>
+                    </div>
+
+                    <div class="col-md-2">
+                        <img src="~/images/school/arrow.png" alt="Arrow" class="arrow">
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <img src="~/images/school/pitch.png" alt="Pitch">
+
+                    <h2>Pitch</h2>
+                    <h3>your start-up idea</h3>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    @{ if ( school.Events.Count > 0 )
+       {
+    <div class="page-break section @(school.ExtraInformation.ShowEvents_Bool ? "no-display" : "")"></div>
+    
+    <div class="container-fluid @(school.ExtraInformation.ShowEvents_Bool ? "" : "no-display")" id="details">
+        <section class="section faux-bg">
+            <div class="row">
+                        <div class="col-md-7" id="event">
+                            <h1>
+                                EVENT DETAIL
+                            </h1>
+
+                            @{
+           if (school.Events.Count > 1)
+           {
+               
+                       <!-- Nav tabs -->
+                        <ul class="nav nav-tabs" role="tablist">
+                            @{
+                                int eventTabCounter = 1;
+                                    foreach (Bus_Event theEvent in school.Events)
+                                    {
+                                        <li class="@( eventTabCounter == 1 ? "active" : "")"><a href="#event-@theEvent.EventId" role="tab" data-toggle="tab">@eventTabCounter</a></li>
+                                        eventTabCounter++;
+                                    }
+                            }
+                        </ul>
+
+                                <!-- Tab panes -->
+            @:<div class="tab-content">
+
+               int eventTabPaneCounter = 1;
+                    foreach (Bus_Event theEvent in school.Events)
+                    {
+                        <div class="tab-pane @( eventTabPaneCounter == 1 ? "active" : "")" id="event-@theEvent.EventId">
+
+                            <h2>@theEvent.Title</h2>
+
+                            <div class="event-row">
+                                <span class="h3 event-label">Time:</span>
+                                <span class="h4">@theEvent.EventDtime_TimeString</span>
+                            </div>
+                            <div class="event-row">
+                                <span class="h3 event-label">Date:</span>
+                                <span class="h4">@theEvent.EventDtime_DateString</span>
+                            </div>
+                            <div class="event-row">
+                                <span class="h3 event-label">Venue:</span>
+                                <span class="h4">@theEvent.Venue</span>
+                            </div>
+                            <div class="event-row">
+                                <span class="h5 event-label">Location:</span>
+                                @{
+                                    if (theEvent.StreetAddress1 != null && !theEvent.StreetAddress1.Equals("") && !theEvent.StreetAddress1.Equals(" "))
+                                    {
+                                        <span class="h4 address">@theEvent.StreetAddress1<br />
+                                            @{if (theEvent.StreetAddress2 != null && !theEvent.StreetAddress2.Equals("") && !theEvent.StreetAddress2.Equals(" "))
+                                                {
+                                                @theEvent.StreetAddress2<br />
+                                                }
+                                            @theEvent.City@:, @theEvent.State, @theEvent.ZipCode
+                                                          }
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="h4">N/A</span>
+                                    }
+                                }
+                            </div>
+                                
+                                    @{if ( theEvent.AdditionalInfo.Length > 0 )
+                                    {
+                                    <div class="event-row">
+                                        <span class="h5 event-label">Additional Info:</span>
+                                        <span class="h4">@theEvent.AdditionalInfo</span>
+                                    </div>
+                                    }
+                                    }
+                            
+                        </div>
+                        eventTabPaneCounter++;
+                    }                              
+               @:</div>
+           }
+           else
+           {
+               
+                    foreach (Bus_Event theEvent in school.Events)
+                    {
+
+                            <h2>@theEvent.Title</h2>
+
+                            <div class="event-row">
+                                <span class="h3 event-label">Time:</span>
+                                <span class="h4">@theEvent.EventDtime_TimeString</span>
+                            </div>
+                            <div class="event-row">
+                                <span class="h3 event-label">Date:</span>
+                                <span class="h4">@theEvent.EventDtime_DateString</span>
+                            </div>
+                            <div class="event-row">
+                                <span class="h3 event-label">Venue:</span>
+                                <span class="h4">@theEvent.Venue</span>
+                            </div>
+                            <div class="event-row">
+                                <span class="h5 event-label">Location:</span>
+                                @{
+                                    if (theEvent.StreetAddress1 != null && !theEvent.StreetAddress1.Equals("") && !theEvent.StreetAddress1.Equals(" "))
+                                    {
+                                        <span class="h4 address">@theEvent.StreetAddress1<br />
+                                            @{if (theEvent.StreetAddress2 != null && !theEvent.StreetAddress2.Equals("") && !theEvent.StreetAddress2.Equals(" "))
+                                                {
+                                                @theEvent.StreetAddress2<br />
+                                                }
+                                            @theEvent.City@:, @theEvent.State, @theEvent.ZipCode
+                                                          }
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="h4">N/A</span>
+                                    }
+                                }
+                            </div>
+                                
+                                    if ( theEvent.AdditionalInfo.Length > 0 )
+                                    {
+                                    <div class="event-row">
+                                        <span class="h5 event-label">Additional Info:</span>
+                                        <span class="h4">@theEvent.AdditionalInfo</span>
+                                    </div>
+                                    }
+                                
+                    }               
+               
+           }
+
+
+
+                                
+
+
+                }
+                        </div>
+
+                <div class="col-md-5" id="billboard">
+                    <h1>
+                        HULT PRIZE AT BILLBOARD
+                    </h1>
+
+                    @{
+                        List<HultBusiness.SchoolSummaryItem> leadingSchools = HultBusiness.Organization.GetSchoolLeaderboard(env, 5);
+                        int count = 1;
+                        foreach (HultBusiness.SchoolSummaryItem leadingSchool in leadingSchools)
+                        {
+                            <div class="row">
+                                <div class="col-md-1">
+                                    <div class="billboard-circle" @(count == 1 ? "style=background:#ff008a;" : "")>
+                                        <h3>@count</h3>
+                                    </div>
+                                </div>
+                                <div class="col-md-11">
+                                    <h2>@leadingSchool.OrganizationName</h2>
+                                    <span class="h4">@leadingSchool.NumberOfTeams</span>
+                                    <span class="h5">teams registered</span>
+                                </div>
+                            </div>
+                            count++;
+                        }
+                    }
+                </div>
+            </div>
+        </section>
+    </div>
+
+    }
+    }
+        @{
+            if ( school.Judges.Count > 0 ) 
+            {
+        
+    <div class="container-fluid @(school.ExtraInformation.ShowJudges_Bool ? "" : "no-display")" id="judges">
+        <section class="section">
+            <h1>Judges</h1>
+            @{
+                int count = 0;
+                foreach (Bus_Judge judge in school.Judges)
+                {
+
+                    if (count % 2 == 0)
+                    {
+                        @:<div class="row">
+                        }
+
+                        <div class="col-md-6">
+                            <div class="col-md-12 judge">
+                                <div class="col-md-5">
+                                    @{ if (judge.ImageUploaded == 1)
+                                     {
+                                        <img src="@Path.Combine(school.OrganizationDirectory_URL(env),judge.ImageFilename)" alt="@judge.NameFirst @judge.NameLast" class="judge-image img-circle" />
+                                     }
+                                    }
+
+                                </div>
+                                <div class="col-md-7">
+                                    <span class="h2 judge-name">@judge.NameFirst @judge.NameLast</span><br />
+                                    <span class="h3 judge-title">@judge.Title</span>
+
+                                    <div class="h4 judge-bio">@judge.Bio</div>
+                                </div>
+                            </div>
+                        </div>
+
+                    if ((count + 1) % 2 == 0)
+                    {
+                        @:</div>
+                    }
+                    count++;
+                }
+            }
+        </section>
+    </div>
+        }
+        }
+
+    @{
+        if ( school.StaffMembers.Count > 0 )
+        {    
+    
+    <div id="staff" class="container-fluid @(school.ExtraInformation.ShowStaff_Bool ? "" : "no-display")">
+        <section class="section">
+            <div class="row" id="committee-message">
+                <div class="col-md-12">
+                    <h1>Organizing Committee</h1>
+                </div>
+                <div class="col-md-8 col-md-offset-2">
+                    <h2>In a few short years, the Hult Prize has become one of the most prestigious student competitions in existence today, offering teams unparalleled opportunities and resources. With the goal of educating and engaging students at its core, this truly international prize has created a platform to support the launch of social enterprises that are tackling seemingly intractable global challenges.</h2>
+                </div>
+            </div>
+
+            <div class="row" id="staff-members">
+                <div class="staff-members">
+                    @{ var staffCount = 0;
+                      foreach (Bus_Staff staffMember in school.StaffMembers)
+                      {
+                          staffCount++;
+                        <div class="staff-member col-md-3">
+                            @{ if (staffMember.ImageUploaded == 1)
+                              {
+                                <img src="@Path.Combine(school.OrganizationDirectory_URL(env),staffMember.ImageFilename)" alt="@staffMember.NameFirst @staffMember.NameLast" class="staff-image img-circle" />
+                              }
+                            }
+                            <h3>@staffMember.NameFirst @staffMember.NameLast</h3>
+                            <h4>@(staffMember.Position == null || staffMember.Position.Equals("") ? "EMPTY POSITION" : @staffMember.Position)</h4>
+                            <ul class="staff-member-social">
+                                @{
+                                  if (staffMember.FacebookUrl.Length > 0)
+                                  {
+                                    <li>
+                                        <a href="@( staffMember.FacebookUrl.Contains("http://") || staffMember.FacebookUrl.Contains("https://") ? "" : "http://" )@staffMember.FacebookUrl" target="_blank"><i class="fa fa-facebook"></i></a>
+                                    </li>
+                                  }
+                                }
+                                @{
+                                  if (staffMember.TwitterUrl.Length > 0)
+                                  {
+                                    <li>
+                                        <a href="@( staffMember.TwitterUrl.Contains("http://") || staffMember.TwitterUrl.Contains("https://") ? "" : "http://" )@staffMember.TwitterUrl" target="_blank"><i class="fa fa-twitter"></i></a>
+                                    </li>
+                                  }
+                                }
+                                @{
+                                  if (staffMember.LinkedInUrl.Length > 0)
+                                  {
+                                    <li>
+                                        <a href="@( staffMember.LinkedInUrl.Contains("http://") || staffMember.LinkedInUrl.Contains("https://") ? "" : "http://" )@staffMember.LinkedInUrl" target="_blank"><i class="fa fa-linkedin"></i></a>
+                                    </li>
+                                  }
+                                }
+
+                            </ul>
+                        </div>
+
+                                      if (staffCount % 4 == 0)
+                                      {
+                                            <div class="clearfix"></div>
+                                      }
+
+
+                                  }
+                    }
+                </div>
+            </div>
+        </section>
+    </div>
+
+    }
+    }
+
+
+    @{
+        if ( school.Sponsors.Count > 0 )
+        {    
+    
+    <div id="sponsors" class="container-fluid @(school.ExtraInformation.ShowSponsor_Bool ? "" : "no-display")">
+        <section class="section">
+            <div class="row">
+                <div class="col-md-12">
+                    <h1>Sponsors</h1>
+
+                    <div class="row">
+
+                        @{
+                            foreach ( Bus_Sponsor sponsor in school.Sponsors )
+                            { 
+                                <div class="col-md-3">
+                                    
+                                    <div class="sponsor">
+                                        <a href="@sponsor.SponsorUrl" target="_blank">
+                                            @{
+                                                if ( sponsor.ImageUploaded == 1 ) {
+                                                    <img src="@HultPrizeAtCommon.BuildAssetURL(school.OrganizationDirectory_URL(env), sponsor.ImageFilename)" alt="@sponsor.SponsorName" />
+                                                }
+                                                else
+                                                {
+                                                    <span class="no-image-sponsor">@sponsor.SponsorName</span>
+                                                }
+                                            }
+
+                                        </a>
+                                    </div>
+                                </div>
+                            }
+                        }
+
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    }
+ }
+
+
+
+
+    @{
+      int pressCount = 0;
+      if ( school.Press.Count > 0 )
+      {
+          pressCount++;
+    <div id="press" class="container-fluid @(school.ExtraInformation.ShowPress_Bool ? "" : "no-display")">
+        <section class="section">
+            <div class="row">
+                <div class="col-md-12">
+                    <h1>Press</h1>
+
+                    <div class="row">
+
+                        @{
+                          foreach (Bus_Press article in school.Press)
+                          {
+                            <div class="col-md-4">
+                                <div class="press-article" data-url="@article.PressUrl">
+                                    <div class="article-image">
+                                        <a href="@article.PressUrl" target="_blank"></a>
+                                    </div>
+                                    <div class="article-title">
+                                        <a href="@article.PressUrl" target="_blank">@article.Title</a>
+                                    </div>
+                                    <div class="article-description">
+                                        <a href="@article.PressUrl" target="_blank">Read More</a>
+                                    </div>
+                                </div>
+                            </div>
+
+                              if (pressCount % 2 == 0)
+                              {
+                                <div class="clearfix"></div>
+                              }
+                          }
+                        }
+
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+    }
+ }
+
+
+</div>
+
+<div class="modal fade" id="video-popup">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-body">
+        <iframe width="900" height="506" src="//www.youtube.com/embed/-CcVYBECYw0?rel=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe>
+      </div>
+      <div class="modal-close">
+        <a href="#" data-dismiss="modal"><img src="~/images/school/close.png" /></a>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

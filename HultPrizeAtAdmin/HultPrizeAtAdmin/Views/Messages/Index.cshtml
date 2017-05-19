@@ -1,0 +1,40 @@
+﻿@{
+    ViewBag.Title = "Index";
+}
+@using FifthTribe.Database.HultPrize;
+@using FifthTribe.HultPrize;
+@using FifthTribe.Common;
+@using HultPrizeAtAdmin.Common;
+
+@{
+    // Get list of announcements
+    List<Bus_Announcement> announcements = ViewBag.Announcements;
+}
+
+<h1 class="page-header">Messages</h1>
+
+<div id="announcements">
+    <table class="table table-bordered table-hult">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>From</th>
+                <th>Type</th>
+                <th>Message</th>
+            </tr>
+        </thead>
+        <tbody>
+        @{
+            foreach ( Bus_Announcement announcement in announcements )
+            {
+                <tr>
+                    <td>@announcement.PublishDTime_String</td>
+                    <td>@announcement.PostedByUserName</td>
+                    <td>@announcement.MessageType_String</td>
+                    <td>@Html.Raw(HttpUtility.HtmlDecode(@announcement.MessageContent))</td>
+                </tr>
+            }
+        }
+        </tbody>
+    </table>
+</div>

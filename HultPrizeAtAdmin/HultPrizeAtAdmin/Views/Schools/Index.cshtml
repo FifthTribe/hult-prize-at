@@ -1,0 +1,266 @@
+﻿@{
+    ViewBag.Title = "Index";
+}
+
+@using FifthTribe.Database.HultPrize;
+@using FifthTribe.HultPrize;
+@using FifthTribe.Common;
+@using HultPrizeAtAdmin.Common;
+
+@{
+    List<Bus_Organization> schools = ViewBag.Schools;
+}
+
+<h1 class="page-header">Schools</h1>
+
+@{
+
+    // General Success Message
+    if (Session["EditSchoolSuccessMessage"] != null)
+    {
+        <div class="row">
+            <div class="alert alert-success">@Session["EditSchoolSuccessMessage"]</div>
+        </div>
+        Session["EditSchoolSuccessMessage"] = null;
+    }
+
+    // General error message
+    if (Session["EditSchoolErrorMessage"] != null)
+    {
+        <div class="row">
+            <div class="alert alert-danger">@Session["EditSchoolErrorMessage"]</div>
+        </div>
+        Session["EditSchoolErrorMessage"] = null;
+    }
+
+    // Check if the user is coming back to this page after adding a new school
+    if ( Session["NewSchoolFormResult"] != null )
+    {
+
+        // Set session into result object
+        WebCommon.Business.BusinessResult formResult = (WebCommon.Business.BusinessResult)Session["NewSchoolFormResult"];
+        
+        // Check if it was successful
+        if ( formResult.Success )
+        {
+  
+            // Successful
+            <div class="alert alert-success alert-dismissible" role="alert">
+              <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+              <strong>Success!</strong> School has been added and campus director invited.
+            </div>                      
+            
+        }
+        else
+        {
+            
+            // Was not successful
+            <div class="alert alert-danger alert-dismissible" role="alert">
+              <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+              <strong>Error!</strong> @formResult.ErrorDisplayMessage
+            </div>
+        }
+        
+        // Reset session
+        Session["NewSchoolFormResult"] = null;
+    }
+    
+    // Change logo error/success messages
+    if ( Session["SchooLogoMessageSuccess"] != null )
+    {
+        <div class="alert alert-success alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            @Session["SchooLogoMessageSuccess"]
+        </div>
+        Session["SchooLogoMessageSuccess"] = null;
+    }
+
+    if (Session["SchooLogoMessageError"] != null)
+    {
+        <div class="alert alert-success alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            @Session["SchooLogoMessageError"]
+        </div>
+        Session["SchooLogoMessageError"] = null;
+    }        
+
+}
+
+<p><a href="#" class="btn btn-lg btn-primary" data-toggle="modal" data-target="#add-new-school"><i class="fa fa-plus-circle"></i> Create New School</a></p>
+
+<table class="table table-hult table-datatable">
+    <thead>
+        <tr>
+            @{
+            if ( HultPrizeAtAdmin.HultPrizeAtApplication.CurrentUser.IsSuperUser )
+            {
+                <th></th>
+            }
+            }
+            <th>School</th>
+            <th>URL</th>
+            <th>Status</th>
+            <th>Campus Director</th>
+            <th>Logo Image</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+    @{
+        // Loop through each school
+        foreach (Bus_Organization school in schools)
+        {
+            <tr>
+            @{
+            if ( HultPrizeAtAdmin.HultPrizeAtApplication.CurrentUser.IsSuperUser )
+            {
+                <td><a href="/school/remove?schoolId=@school.OrganizationId" class="btn btn-default"><i class="glyphicon glyphicon-trash"></i></a></td>
+            }
+            }
+                <td>
+                    @school.OrganizationName (URL: <a class="btn-preview-url" href="@school.SchoolPublicURL(ViewBag.RunTimeEnvironment)_preview">@school.SchoolPublicURL(ViewBag.RunTimeEnvironment)</a>)<br />
+                        <a class="btn-preview-url btn-xs btn btn-primary" href="@school.SchoolPublicURL(ViewBag.RunTimeEnvironment)_preview">Preview Site</a>                    
+                </td>
+                <td class="school-url-update">
+                    <form action="/school/updateurl">
+                        <input type="hidden" name="schoolId" value="@school.OrganizationId" />
+                        <input type="text" value="@school.ExtraInformation.CustomUrlEnding" name="url" class="form-control input-sm" />
+                        <input type="submit" class="btn btn-primary btn-sm" value="Update" />
+                    </form>
+                </td>
+                <td><span class="label @(school.ExtraInformation.IsPageActive ? "label-success" : "label-warning")">@(school.ExtraInformation.IsPageActive ? "Active" : "Inactive")</span>
+                </td>
+                <td>@school.CampusDirectorInfo.NameFirst @school.CampusDirectorInfo.NameLast<br />
+                    <a href="mailto:@school.CampusDirectorInfo.Email">@school.CampusDirectorInfo.Email</a><br />
+                    @school.CampusDirectorInfo.PhoneDetails.Display
+                </td>
+                <td class="school-logo-image">
+        @{
+            if (school.ExtraInformation.LogoImageUploaded == 1)
+            {
+                <img src="@HultPrizeAtCommon.BuildAssetURL(school.OrganizationDirectory_URL(ViewBag.RuntimeEnvironment),school.ExtraInformation.LogoImageName)" alt="" border="0" />
+            }
+        }
+            <form action="/school/logo" class="first" method="post" enctype="multipart/form-data">
+                <input type="hidden" value="@school.OrganizationId" name="orgId" />
+                <input type="hidden" value="true" name="comingFromSchoolsPage" />
+                <span class="btn btn-primary btn-file"><i class="glyphicon glyphicon-picture"></i> Upload logo <input type="file" name="file" class="image-upload" /></span>
+            </form>
+
+        @{
+            if (school.ExtraInformation.LogoImageUploaded == 1)
+            {
+            <form action="/school/logodelete" method="post" enctype="multipart/form-data">
+                <input type="hidden" value="@school.OrganizationId" name="orgId" />
+                <input type="hidden" value="true" name="comingFromSchoolsPage" />
+                <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-trash"></i> Delete logo</button>
+            </form>
+            }
+        }
+                </td>
+                <td><a class="btn btn-primary" href="/school?id=@school.OrganizationId"><i class="glyphicon glyphicon-pencil"></i> Edit page</a><br />
+                </td>
+            </tr>
+        }
+    }        
+    </tbody>
+</table>
+
+
+<div class="modal fade" id="add-new-school" tabindex="-1" role="dialog" aria-labelledby="add-new-school-label">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title"id="add-new-school-label">Create New School</h4>
+      </div>
+      <div class="modal-body">
+        <form class="form-horizontal" method="post" action="/school/new" role="form">
+          <div class="form-group has-feedback">
+            <label for="schoolname" class="col-sm-2 control-label">School Name</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control required" id="schoolname" name="info.OrganizationName" placeholder="School Name">
+              <span class="glyphicon glyphicon-remove form-control-feedback"></span>
+            </div>
+          </div>
+          <div class="form-group has-feedback">
+            <label for="schoolurl" class="col-sm-2 control-label">URL</label>
+            <div class="col-sm-10">
+                <div class="input-group">
+                    <div class="input-group-addon">www.hultprizeat.com/</div><input type="text" class="form-control required" id="schoolurl" name="info.OrganizationCustomURL" placeholder="" />
+              <span class="glyphicon glyphicon-remove form-control-feedback"></span>
+                </div>
+            </div>
+          </div>
+          <div class="form-group has-feedback">
+            <label for="campusdirector_firstname" class="col-sm-2 control-label">Campus Director</label>
+            <div class="col-sm-5">
+              <input type="text" class="form-control required" id="campusdirector_firstname" name="info.AdminFirstName" placeholder="First Name">
+              <span class="glyphicon glyphicon-remove form-control-feedback"></span>
+            </div>
+            <div class="col-sm-5">
+              <input type="text" class="form-control required" id="campusdirector_lastname" name="info.AdminLastName" placeholder="Last Name">
+              <span class="glyphicon glyphicon-remove form-control-feedback"></span>
+            </div>
+          </div>
+          <div class="form-group has-feedback">
+            <label for="email" class="col-sm-2 control-label">Email</label>
+            <div class="col-sm-10">
+              <input type="email" class="form-control email" id="email" name="info.Email" placeholder="Enter Email">
+              <span class="glyphicon glyphicon-remove form-control-feedback"></span>
+            </div>
+          </div>
+        <div class="form-group has-feedback has-international-option">
+            <label for="organization.PocPhone" class="col-sm-2 control-label">Phone Number</label>
+            <div class="col-sm-10">
+                <div class="input-inline input-small north-american">
+                    <input type="text" class="form-control only-numbers minlength no-dash-input required" name="phoneAreaCode" maxlength="3" size="3" />
+                    <span class="glyphicon glyphicon-remove form-control-feedback"></span>
+                </div> <span class="input-inline north-american phone-dash">-</span>
+                <div class="input-inline input-small north-american">
+                    <input type="text" class="form-control only-numbers minlength no-dash-input required" id="phoneFirstThree" name="phoneFirstThree" maxlength="3" size="3" />
+                    <span class="glyphicon glyphicon-remove form-control-feedback"></span>
+                </div> <span class="input-inline north-american phone-dash">-</span>
+                <div class="input-inline input-small north-american">
+                    <input type="text" class="form-control only-numbers minlength no-dash-input required" id="phoneLastFour" name="phoneLastFour" maxlength="4" size="3" />
+                    <span class="glyphicon glyphicon-remove form-control-feedback"></span>
+                </div>
+                <div class="input-inline input-small international hide">
+                    <input type="text" class="form-control" id="phoneInternationalPhoneNumber" name="phoneInternationalPhoneNumber" placeholder="International Number" />
+                </div>
+                <div class="input-inline input-small phone-extension">
+                    <span class="inline">Ext</span><input type="text" class="form-control only-numbers no-dash-input" placeholder="Ext." name="phoneExtension" />
+                </div>
+                <div class="clearfix is-international-wrap">
+                    <label><input type="checkbox" class="is-international" /> International number?</label>
+                    <input type="hidden" class="is-international-field" id="phoneIsInternational" name="phoneIsInternational" />
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group has-feedback country-code hide">
+            <label for="phoneCountryCode" class="col-sm-2 control-label">Phone Country Code</label>
+            <div class="col-sm-10">
+                <div class="input-small">
+                    <input type="text" class="form-control" id="phoneCountryCode" name="phoneCountryCode" size="5" maxlength="5" />
+                    <span class="glyphicon glyphicon-remove form-control-feedback"></span>
+                </div>
+            </div>
+        </div>
+          <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+              <button type="submit" class="btn btn-default">Create Page & Send Activation Email</button>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+    <div id="preview-url">
+        <a href="#" class="btn btn-default btn-close-preview"><i class="glyphicon glyphicon-remove"></i> Close</a>
+        <div class="preview-url-iframe"></div>
+    </div>

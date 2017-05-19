@@ -1,0 +1,77 @@
+﻿/*
+   Fifth Tribe
+   Amir Sahib
+   2014
+*/
+
+.hide {
+    display:none;
+}
+
+.input-clear {
+    clear:both;
+}
+.input-inline {
+    position:relative;
+    display:inline-block;
+    vertical-align:middle;
+    float:left;
+}
+/* Form styles */
+.input-xsmall {
+    width:75px;
+}
+.input-small {
+    width:150px;
+}
+.input-medium {
+    width:300px;
+}
+.input-large {
+    width:600px;
+}
+.has-feedback .alert {
+    margin-top:10px;
+    display:none;
+}
+.has-feedback.show-alert .has-error .alert {
+    display:block;
+}
+.form-group .form-control-feedback {
+    display:none;
+}
+.form-group .has-error .form-control-feedback {
+    display:block;
+}
+
+.form-horizontal .has-feedback .has-error-select .form-control-feedback {
+    right:30px;
+}
+
+.phone-extension span { display:inline-block; float:left; line-height:36px; margin-right:5px; }
+.phone-extension .form-control {
+    float:left; display:inline-block; width:80%;
+}
+.phone-dash {
+    line-height:36px;
+}
+/* File upload button */
+.btn-file {
+    position: relative;
+    overflow: hidden;
+}
+.btn-file input[type=file] {
+    position: absolute;
+    top: 0;
+    right: 0;
+    min-width: 100%;
+    min-height: 100%;
+    font-size: 999px;
+    text-align: right;
+    filter: alpha(opacity=0);
+    opacity: 0;
+    outline: none;
+    background: white;
+    cursor: inherit;
+    display: block;
+}

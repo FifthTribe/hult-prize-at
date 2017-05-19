@@ -1,0 +1,130 @@
+﻿<html>
+<head>
+    @{
+        ViewBag.Title = "_header";
+    }
+    @using FifthTribe.HultPrize;
+    @{
+        Bus_Organization school = ViewBag.School;
+        int env = ViewBag.RunTimeEnvironment;
+    }
+    <title>Welcome to Hult Prize @@ @school.OrganizationName</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+    <!--<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/jquery.bootstrapvalidator/0.5.1/css/bootstrapValidator.min.css" />-->
+    <link rel="stylesheet" href="~/css/school.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="~/css/video.css" type="text/css" media="screen" />
+
+    <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+
+ <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-34590577-4', 'auto');
+  ga('send', 'pageview');
+
+</script>   
+</head>
+<body>
+    <div id="banner" class="banner" style="@( school.ExtraInformation.BackgroundImageUploaded == 1 ? "background-image:url('"+school.OrganizationDirectory_URL(env) +"/"+school.ExtraInformation.BackgroundImageName+"');" : "")">
+        <div class="banner-rectangle @( school.ExtraInformation.LogoImageUploaded == 1 ?
+    "has-image" : "")">
+            @{
+                if (school.ExtraInformation.LogoImageUploaded == 1)
+                {
+                    string imageLocation = school.OrganizationDirectory_URL(env) + "/" + school.ExtraInformation.LogoImageName;
+                    <div class="banner-item">
+                        <img id="image-banner" class="img" src="@imageLocation" />
+                    </div>
+                }
+                else
+                {
+                    <div class="banner-item">
+                        <img src="~/images/school/hultprizeat-logo.png" alt="Hult Prize At Stanford" />
+                    </div>
+                    <div class="banner-item school-name">
+                        <span>@@</span><br />@school.OrganizationName
+                    </div>
+                }
+            }
+        </div>
+    </div>
+
+    <div id="nav">
+        <div class="navbar navbar-default navbar-static no-margin">
+            <div class="container">
+                <a class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <i class="fa fa-bars"></i>
+                </a>
+                <nav class="collapse navbar-collapse bs-navbar-collapse" role="navigation">
+                    <ul class="nav navbar-nav">
+                        <li class="item"><a href="http://www.hultprize.org/" target="_blank">Hult Prize</a></li>
+                        @{
+                            if (school.ExtraInformation.ShowDirectorMessage_Bool)
+                            {
+                                <li class="item"><a class="scroll-link" href="#" data-id="message">Message</a></li>
+                            }
+                        }
+                        <li class="item"><a class="scroll-link" href="#" data-id="challenge">2016 Challenge</a></li>
+                        <li class="item"><a class="scroll-link" href="#" data-id="compete">Compete</a></li>
+
+                        @{
+                            if (school.ExtraInformation.ShowEvents_Bool && school.Events.Count > 0)
+                            {
+                                <li class="item"><a class="scroll-link" href="#" data-id="details">Event Details</a></li>
+                            }
+
+                            if (school.ExtraInformation.ShowJudges_Bool && school.Judges.Count > 0)
+                            {
+                                <li class="item"><a class="scroll-link" href="#" data-id="judges">Judges</a></li>
+                            }
+
+                            if (school.ExtraInformation.ShowStaff_Bool && school.StaffMembers.Count > 0)
+                            {
+                                <li class="item"><a class="scroll-link" href="#" data-id="staff">Staff</a></li>
+                            }
+                            
+                            if (school.ExtraInformation.ShowSponsor_Bool && school.Sponsors.Count > 0)
+                            {
+                                <li class="item"><a class="scroll-link" href="#" data-id="sponsors">Sponsors</a></li>
+                            }
+
+                            if (school.ExtraInformation.ShowPress_Bool && school.Press.Count > 0)
+                            {
+                                <li class="item"><a class="scroll-link" href="#" data-id="press">Press</a></li>
+                            }                  
+                            if (school.ExtraInformation.ShowRegistrationForm_Bool)
+                            {
+                        <li class="item"><a class="scroll-link" href="#" data-id="register">Register</a></li>
+                            }  
+                        }
+
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right school-social-links">
+                        @{
+                            if (school.ExtraInformation.FacebookUrl.Length > 0)
+                            {
+                                <li><a href="@( school.ExtraInformation.FacebookUrl.Contains("http://") || school.ExtraInformation.FacebookUrl.Contains("https://") ? "" : "http://")@school.ExtraInformation.FacebookUrl" target="_blank"><i class="fa fa-facebook"></i></a></li>
+                            }
+                            if (school.ExtraInformation.TwitterUrl.Length > 0)
+                            {
+                                <li><a href="@( school.ExtraInformation.TwitterUrl.Contains("http://") || school.ExtraInformation.TwitterUrl.Contains("https://") ? "" : "http://")@school.ExtraInformation.TwitterUrl" target="_blank"><i class="fa fa-twitter"></i></a></li>
+                            }
+                            if (school.ExtraInformation.LinkedInUrl.Length > 0)
+                            {
+                                <li><a href="@( school.ExtraInformation.LinkedInUrl.Contains("http://") || school.ExtraInformation.LinkedInUrl.Contains("https://") ? "" : "http://")@school.ExtraInformation.LinkedInUrl" target="_blank"><i class="fa fa-linkedin"></i></a></li>
+                            }
+                            if (school.ExtraInformation.InstagramUrl.Length > 0)
+                            {
+                                <li><a href="@( school.ExtraInformation.InstagramUrl.Contains("http://") || school.ExtraInformation.InstagramUrl.Contains("https://") ? "" : "http://")@school.ExtraInformation.InstagramUrl" target="_blank"><i class="fa fa-instagram"></i></a></li>
+                            }                                                                                                              
+                        }
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
